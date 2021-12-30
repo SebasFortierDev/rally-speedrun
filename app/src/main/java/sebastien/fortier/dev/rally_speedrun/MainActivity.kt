@@ -10,6 +10,7 @@ import android.hardware.SensorManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.widget.Chronometer
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -17,13 +18,18 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.room.TypeConverter
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import sebastien.fortier.dev.rally_speedrun.model.Point
+import java.lang.reflect.Type
 import java.util.concurrent.TimeUnit
 
 
@@ -71,6 +77,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private var compteurPasBase = -1f
     private lateinit var sensorManager: SensorManager
     private var sensor: Sensor? = null
+
+
 
     /**
      * Initialisation de l'Activity.
@@ -161,6 +169,12 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
         txtPas.text = getString(R.string.nb_pas, "0")
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI)
+
+        // Récupération du parcours envoyé
+        val parcoursString = intent.getStringExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY").toString()
+        val parcoursMap = toParcours(parcoursString)
+
+
     }
 
     /**
@@ -340,5 +354,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
                 this.finish()
             }
             .create()
+    }
+
+    @TypeConverter
+    fun toParcours(parcoursString: String?): Parcours {
+
+        val gson = Gson()
+        val type: Type = object : TypeToken<Parcours?>() {}.type
+        return gson.fromJson(parcoursString, type)
     }
 }
