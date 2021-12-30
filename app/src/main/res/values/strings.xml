@@ -11,4 +11,5 @@
     <string name="nb_pas">Nombre de pas : %1$s</string>
     <string name="label_temps">Temps : </string>
     <string name="label_logo">Logo</string>
+    <string name="mes_parcours">MES PARCOURS</string>
 </resources>
