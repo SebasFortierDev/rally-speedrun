@@ -26,13 +26,15 @@ import sebastien.fortier.dev.rally_speedrun.R
 import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.util.concurrent.TimeUnit
 import android.text.Editable
-
-
+import android.widget.Button
 
 
 private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"
 
 class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
+
+    private lateinit var btnConfirmerChoix: Button
+    private lateinit var btnAnnulerChoix: Button
 
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var googleMap: GoogleMap
@@ -44,14 +46,18 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var requestingLocationUpdates = false
 
 
-    private val points = arrayListOf<Point>()
+    private var points = arrayListOf<Point>()
 
     private var markerPosition: Marker? = null
+
+    private var markerActuel: Marker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choix_points)
 
+        btnConfirmerChoix = findViewById(R.id.btn_confirmer_choix)
+        btnAnnulerChoix = findViewById(R.id.btn_annuler_choix)
         // Charge la gestion de Position GPS
         if (savedInstanceState != null) {
             requestingLocationUpdates = savedInstanceState.getBoolean(
@@ -77,6 +83,10 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map_choix) as SupportMapFragment
 
         mapFragment.getMapAsync(this)
+
+        btnAnnulerChoix.setOnClickListener {
+            supprimerChoix()
+        }
     }
 
     override fun onStart() {
@@ -115,12 +125,12 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun dialogNomPoint(marker : Marker): AlertDialog {
-        val nomPointEditText : EditText = EditText(this)
+        val nomPointEditText = EditText(this)
 
         return AlertDialog.Builder(this)
             .setTitle(getString(R.string.titre_ajout_point_dialog))
             .setView(nomPointEditText)
-            .setMessage("Veuillez saisir le nom du point si désiré")
+            .setMessage(getString(R.string.description_ajout_point_dialog))
             .setPositiveButton(
                 getString(R.string.ajouter_point_dialog)
             ) { _, _ ->
@@ -135,7 +145,9 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
                     marker.position.let { pos -> LatLng(pos.latitude, pos.longitude) }
                         .let { it -> Point(it, nomPoint, 260F, 0x006e35e3) }
 
+                point.marker = marker
                 points.add(point)
+                markerActuel = marker
 
                 Log.d("listePOits", points.toString())
             }
@@ -145,6 +157,16 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
                 marker.isVisible = false
             }
             .create()
+    }
+
+    private fun supprimerChoix() {
+
+        if (points.isNotEmpty()) {
+            points.last().marker?.remove()
+            points.removeLast()
+
+        }
+
     }
 
     /**

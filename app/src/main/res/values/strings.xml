@@ -21,4 +21,5 @@
     <string name="ajouter_point_dialog">AJOUTER</string>
     <string name="annuler_ajout">ANNULER</string>
     <string name="titre_ajout_point_dialog">Ajouter point</string>
+    <string name="description_ajout_point_dialog">Veuillez saisir le nom du point si désiré</string>
 </resources>
