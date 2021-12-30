@@ -16,6 +16,7 @@ import com.google.gson.reflect.TypeToken
 import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunTypeConverters
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import sebastien.fortier.dev.rally_speedrun.model.Point
+import sebastien.fortier.dev.rally_speedrun.parcours.ParcoursListActivity
 import java.lang.reflect.Type
 
 
@@ -28,9 +29,10 @@ import java.lang.reflect.Type
  * @author Sébastien Fortier
  */
 class DemarrerActivity : AppCompatActivity() {
-    private val rallySpeedrunViewModel: RallySpeedrunViewModel by viewModels()
+
 
     private lateinit var btnCommencer: Button
+    private lateinit var btnParcours: Button
 
     private lateinit var parcours: Parcours
 
@@ -64,6 +66,7 @@ class DemarrerActivity : AppCompatActivity() {
         setContentView(R.layout.activity_demarrer)
 
         btnCommencer = findViewById(R.id.btnCommencer)
+        btnParcours = findViewById(R.id.btnParcours)
     }
 
     /**
@@ -106,7 +109,14 @@ class DemarrerActivity : AppCompatActivity() {
             }
         }
 
-        rallySpeedrunViewModel.parcoursLiveData.observe(
+        btnParcours.setOnClickListener {
+            val intent = Intent(this, ParcoursListActivity::class.java)
+
+
+            startActivity(intent)
+        }
+
+        /*rallySpeedrunViewModel.parcoursLiveData.observe(
             this,
             { listeParcours ->
                 listeParcours?.let {
@@ -115,7 +125,7 @@ class DemarrerActivity : AppCompatActivity() {
                     Log.d("Parcours", "Réponse : $parcours")
                 }
             }
-        )
+        )*/
     }
 
     /**
