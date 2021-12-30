@@ -17,7 +17,6 @@ import androidx.core.content.ContextCompat
  * @property btnCommencer Le bouton demandant les permissions et qui permet de commencer le rally
  *
  * @author Sébastien Fortier
- * @author Ethan Leduc
  */
 class DemarrerActivity : AppCompatActivity() {
 

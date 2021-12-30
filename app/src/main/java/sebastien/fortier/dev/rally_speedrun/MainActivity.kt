@@ -23,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.util.concurrent.TimeUnit
 
 
@@ -48,7 +49,6 @@ private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES
  * @property sensor Le sensor utilisé
  *
  * @author Sébastien Fortier
- * @author Ethan Leduc
  */
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListener {
     private lateinit var txtPas: TextView
