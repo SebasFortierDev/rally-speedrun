@@ -18,4 +18,7 @@
     <string name="confirmer">CONFIRMER</string>
     <string name="annuler_choix">ANNULER CHOIX</string>
     <string name="confirmer_choix">CONFIRMER CHOIX</string>
+    <string name="ajouter_point_dialog">AJOUTER</string>
+    <string name="annuler_ajout">ANNULER</string>
+    <string name="titre_ajout_point_dialog">Ajouter point</string>
 </resources>

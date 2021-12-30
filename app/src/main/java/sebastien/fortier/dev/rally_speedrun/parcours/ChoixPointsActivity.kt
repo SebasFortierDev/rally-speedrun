@@ -6,6 +6,10 @@ import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -21,6 +25,10 @@ import com.google.android.gms.maps.model.MarkerOptions
 import sebastien.fortier.dev.rally_speedrun.R
 import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.util.concurrent.TimeUnit
+import android.text.Editable
+
+
+
 
 private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"
 
@@ -35,7 +43,8 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationCallback: LocationCallback
     private var requestingLocationUpdates = false
 
-    private val points = ArrayList<Point>()
+
+    private val points = arrayListOf<Point>()
 
     private var markerPosition: Marker? = null
 
@@ -77,7 +86,6 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
             startLocationUpdates()
         }
 
-
     }
 
     /**
@@ -92,7 +100,51 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
+
+        googleMap.setOnMapClickListener {
+
+            val marker = googleMap.addMarker(MarkerOptions().position(it))
+
+            if (marker != null) {
+                dialogNomPoint(marker).show()
+            }
+
+        }
+
         mapEstChargee = true
+    }
+
+    private fun dialogNomPoint(marker : Marker): AlertDialog {
+        val nomPointEditText : EditText = EditText(this)
+
+        return AlertDialog.Builder(this)
+            .setTitle(getString(R.string.titre_ajout_point_dialog))
+            .setView(nomPointEditText)
+            .setMessage("Veuillez saisir le nom du point si désiré")
+            .setPositiveButton(
+                getString(R.string.ajouter_point_dialog)
+            ) { _, _ ->
+
+                var nomPoint: String = nomPointEditText.text.toString()
+
+                if (nomPoint.isEmpty()) {
+                    nomPoint = "Point " + (points.size + 1).toString()
+                }
+
+                val point =
+                    marker.position.let { pos -> LatLng(pos.latitude, pos.longitude) }
+                        .let { it -> Point(it, nomPoint, 260F, 0x006e35e3) }
+
+                points.add(point)
+
+                Log.d("listePOits", points.toString())
+            }
+            .setNegativeButton(
+                getString(R.string.annuler_ajout)
+            ) {_, _ ->
+                marker.isVisible = false
+            }
+            .create()
     }
 
     /**
