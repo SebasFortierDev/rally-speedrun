@@ -1,19 +1,24 @@
 package sebastien.fortier.dev.rally_speedrun.parcours
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import sebastien.fortier.dev.rally_speedrun.MainActivity
 import sebastien.fortier.dev.rally_speedrun.R
 import sebastien.fortier.dev.rally_speedrun.RallySpeedrunViewModel
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 
 class ParcoursListActivity : AppCompatActivity() {
     private val rallySpeedrunViewModel: RallySpeedrunViewModel by viewModels()
+
+    private lateinit var btnAjouterParcours: Button
 
     private lateinit var parcoursRecyclerView: RecyclerView
     private var adapter: ParcoursAdapter? = ParcoursAdapter(emptyList())
@@ -25,11 +30,18 @@ class ParcoursListActivity : AppCompatActivity() {
         parcoursRecyclerView.layoutManager = LinearLayoutManager(this)
         parcoursRecyclerView.adapter = adapter
 
+        btnAjouterParcours = findViewById(R.id.btn_ajout_parcours)
+
 
     }
 
     override fun onStart() {
         super.onStart()
+
+        btnAjouterParcours.setOnClickListener {
+            val intent = Intent(this, AjoutParcoursActivity::class.java)
+            startActivity(intent)
+        }
 
         rallySpeedrunViewModel.parcoursLiveData.observe(
             this,

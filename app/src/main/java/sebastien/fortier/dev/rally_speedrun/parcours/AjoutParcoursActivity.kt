@@ -1,41 +1,28 @@
-package sebastien.fortier.dev.rally_speedrun
+package sebastien.fortier.dev.rally_speedrun.parcours
 
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import androidx.activity.viewModels
+import android.text.Editable
+import android.text.TextWatcher
 import android.widget.Button
+import android.widget.EditText
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunTypeConverters
+import sebastien.fortier.dev.rally_speedrun.R
+import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
-import sebastien.fortier.dev.rally_speedrun.model.Point
-import sebastien.fortier.dev.rally_speedrun.parcours.ParcoursListActivity
-import java.lang.reflect.Type
 
+class AjoutParcoursActivity : AppCompatActivity() {
+    private val rallySpeedrunRepository = RallySpeedrunRepository.get()
 
-/**
- * Activity qui demande les permissions et qui permet de débuter le rally
- *
- * @property requestPermissionLauncher Le lancher qui va demander les permissions
- * @property btnCommencer Le bouton demandant les permissions et qui permet de commencer le rally
- *
- * @author Sébastien Fortier
- */
-class DemarrerActivity : AppCompatActivity() {
-
-
-    private lateinit var btnCommencer: Button
-    private lateinit var btnParcours: Button
-
+    private lateinit var btnAjouterParcours: Button
+    private lateinit var btnChoisirPoints: Button
+    private lateinit var nomParcoursEditText: EditText
     private lateinit var parcours: Parcours
-
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -43,40 +30,37 @@ class DemarrerActivity : AppCompatActivity() {
         ) { permissions ->
             when {
                 permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, ChoixPointsActivity::class.java)
                     startActivity(intent)
                 }
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, ChoixPointsActivity::class.java)
                     startActivity(intent)
                 } else -> {
-                    dialogRefuse().show()
-                }
+                dialogRefuse().show()
+            }
             }
         }
 
-
-    /**
-     * Initialisation de l'Activity.
-     *
-     * @param savedInstanceState Les données conservées au changement d'état.
-     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_demarrer)
+        setContentView(R.layout.activity_ajout_parcours)
 
-        btnCommencer = findViewById(R.id.btnCommencer)
-        btnParcours = findViewById(R.id.btnParcours)
+        parcours = Parcours(nom = "", points = emptyList())
+        btnAjouterParcours = findViewById(R.id.btn_confirmer_ajout_parcours)
+        btnChoisirPoints = findViewById(R.id.btn_choisir_points)
+        nomParcoursEditText = findViewById(R.id.nom_parcours)
     }
 
-    /**
-     * Démarrage de l'activity.
-     */
     override fun onStart() {
         super.onStart()
 
-        btnCommencer.setOnClickListener {
+        btnAjouterParcours.setOnClickListener {
+            rallySpeedrunRepository.addParcours(parcours)
+            this.finish()
+        }
 
+        btnChoisirPoints.setOnClickListener {
             when {
                 ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -84,15 +68,7 @@ class DemarrerActivity : AppCompatActivity() {
                         ContextCompat.checkSelfPermission(this,
                             Manifest.permission.ACCESS_COARSE_LOCATION
                         ) == PackageManager.PERMISSION_GRANTED -> {
-
-                    // ICI
-
-                    // Envoie du parcours désiré
-                    val intent = Intent(this, MainActivity::class.java)
-
-                    val parcoursString = fromParcours(parcours)
-                    intent.putExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY", parcoursString )
-
+                    val intent = Intent(this, ChoixPointsActivity::class.java)
                     startActivity(intent)
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) -> {
@@ -109,12 +85,20 @@ class DemarrerActivity : AppCompatActivity() {
             }
         }
 
-        btnParcours.setOnClickListener {
-            val intent = Intent(this, ParcoursListActivity::class.java)
+        val nomWatcher = object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                // Vide
+            }
 
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                parcours.nom = s.toString()
+            }
 
-            startActivity(intent)
+            override fun afterTextChanged(s: Editable?) {
+                // Vide
+            }
         }
+        nomParcoursEditText.addTextChangedListener(nomWatcher)
 
     }
 
@@ -151,12 +135,5 @@ class DemarrerActivity : AppCompatActivity() {
             .setMessage(getString(R.string.body_dialog_refuse))
             .setPositiveButton(getString(R.string.positif_dialog_base)) {_, _ -> }
             .create()
-    }
-
-    fun fromParcours(parcours: Parcours?): String {
-
-        val gson = Gson()
-        val type: Type = object : TypeToken<Parcours?>() {}.type
-        return gson.toJson(parcours, type)
     }
 }
