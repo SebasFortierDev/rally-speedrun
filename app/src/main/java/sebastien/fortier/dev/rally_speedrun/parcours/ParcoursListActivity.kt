@@ -71,8 +71,6 @@ class ParcoursListActivity : AppCompatActivity() {
             this.parcours = parcours
             nomParcours.text = parcours.nom
 
-
-
         }
 
         /**
