@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">tp-map</string>
+    <string name="commencer">COMMENCER</string>
+    <string name="fin_dialogue_titre">BRAVO!!!!</string>
+    <string name="fin_dialogue_positif">Recommencer</string>
+    <string name="titre_dialog_permission">Permissions demandées</string>
+    <string name="body_dialog_permission">Comme il s\'agit d\'une application gérant votre activité physique en s\'assurant que vous visitez physiquement des emplacements, il est nécessaire de pouvoir savoir ou vous êtes. Vos données sont en sécurité et ne seront pas vendus.</string>
+    <string name="positif_dialog_base">OK</string>
+    <string name="body_dialog_refuse">La localisation est nécessaire pour le fonctionnement de l\'application. Veuillez activer la localisation dans les paramètres de votre appareil pour continuer</string>
+    <string name="titre_dialog_refuse">Activer la localisation</string>
+    <string name="nb_pas">Nombre de pas : %1$s</string>
+    <string name="label_temps">Temps : </string>
+    <string name="label_logo">Logo</string>
+</resources>
