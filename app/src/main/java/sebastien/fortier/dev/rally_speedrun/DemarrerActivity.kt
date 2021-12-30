@@ -11,6 +11,12 @@ import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunTypeConverters
+import sebastien.fortier.dev.rally_speedrun.model.Parcours
+import sebastien.fortier.dev.rally_speedrun.model.Point
+import java.lang.reflect.Type
 
 
 /**
@@ -26,6 +32,7 @@ class DemarrerActivity : AppCompatActivity() {
 
     private lateinit var btnCommencer: Button
 
+    private lateinit var parcours: Parcours
 
 
     private val requestPermissionLauncher =
@@ -74,7 +81,15 @@ class DemarrerActivity : AppCompatActivity() {
                         ContextCompat.checkSelfPermission(this,
                             Manifest.permission.ACCESS_COARSE_LOCATION
                         ) == PackageManager.PERMISSION_GRANTED -> {
+
+                    // ICI
+
+                    // Envoie du parcours désiré
                     val intent = Intent(this, MainActivity::class.java)
+
+                    val parcoursString = fromParcours(parcours)
+                    intent.putExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY", parcoursString )
+
                     startActivity(intent)
                 }
                 shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION) -> {
@@ -93,8 +108,10 @@ class DemarrerActivity : AppCompatActivity() {
 
         rallySpeedrunViewModel.parcoursLiveData.observe(
             this,
-            { parcours ->
-                parcours?.let {
+            { listeParcours ->
+                listeParcours?.let {
+                    Log.d("Parcours", "Réponse : $listeParcours")
+                    parcours = listeParcours[0]
                     Log.d("Parcours", "Réponse : $parcours")
                 }
             }
@@ -134,5 +151,12 @@ class DemarrerActivity : AppCompatActivity() {
             .setMessage(getString(R.string.body_dialog_refuse))
             .setPositiveButton(getString(R.string.positif_dialog_base)) {_, _ -> }
             .create()
+    }
+
+    fun fromParcours(parcours: Parcours?): String {
+
+        val gson = Gson()
+        val type: Type = object : TypeToken<Parcours?>() {}.type
+        return gson.toJson(parcours, type)
     }
 }
