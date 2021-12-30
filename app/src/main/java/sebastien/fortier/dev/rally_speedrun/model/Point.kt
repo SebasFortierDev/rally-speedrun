@@ -1,4 +1,4 @@
-package sebastien.fortier.dev.rally_speedrun
+package sebastien.fortier.dev.rally_speedrun.model
 
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker

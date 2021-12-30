@@ -5,10 +5,13 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import androidx.activity.viewModels
 import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+
 
 /**
  * Activity qui demande les permissions et qui permet de débuter le rally
@@ -17,11 +20,13 @@ import androidx.core.content.ContextCompat
  * @property btnCommencer Le bouton demandant les permissions et qui permet de commencer le rally
  *
  * @author Sébastien Fortier
- * @author Ethan Leduc
  */
 class DemarrerActivity : AppCompatActivity() {
+    private val rallySpeedrunViewModel: RallySpeedrunViewModel by viewModels()
 
     private lateinit var btnCommencer: Button
+
+
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -61,6 +66,7 @@ class DemarrerActivity : AppCompatActivity() {
         super.onStart()
 
         btnCommencer.setOnClickListener {
+
             when {
                 ContextCompat.checkSelfPermission(this,
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -84,6 +90,15 @@ class DemarrerActivity : AppCompatActivity() {
                 }
             }
         }
+
+        rallySpeedrunViewModel.parcoursLiveData.observe(
+            this,
+            { parcours ->
+                parcours?.let {
+                    Log.d("Parcours", "Réponse : $parcours")
+                }
+            }
+        )
     }
 
     /**
