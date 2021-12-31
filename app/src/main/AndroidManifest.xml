@@ -25,9 +25,6 @@
             android:name=".parcours.ChoixPointsActivity"
             android:exported="false" />
         <activity
-            android:name=".parcours.AjoutParcoursActivity"
-            android:exported="false" />
-        <activity
             android:name=".parcours.ParcoursListActivity"
             android:exported="false" />
         <activity

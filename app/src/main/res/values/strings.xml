@@ -22,4 +22,6 @@
     <string name="annuler_ajout">ANNULER</string>
     <string name="titre_ajout_point_dialog">Ajouter point</string>
     <string name="description_ajout_point_dialog">Veuillez saisir le nom du point si désiré</string>
+    <string name="titre_ajout_parcours_dialogue">Ajouter parcours</string>
+    <string name="description_ajout_parcours_dialog">Veuillez saisir le nom du parcours</string>
 </resources>

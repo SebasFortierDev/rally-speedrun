@@ -27,11 +27,20 @@ import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.util.concurrent.TimeUnit
 import android.text.Editable
 import android.widget.Button
+import android.content.Intent
+import android.net.Uri
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
+import sebastien.fortier.dev.rally_speedrun.model.Parcours
+import java.lang.reflect.Type
 
 
 private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"
 
 class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
+
+    private val rallySpeedrunRepository = RallySpeedrunRepository.get()
 
     private lateinit var btnConfirmerChoix: Button
     private lateinit var btnAnnulerChoix: Button
@@ -45,7 +54,6 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
     private lateinit var locationCallback: LocationCallback
     private var requestingLocationUpdates = false
 
-
     private var points = arrayListOf<Point>()
 
     private var markerPosition: Marker? = null
@@ -56,8 +64,10 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_choix_points)
 
+
         btnConfirmerChoix = findViewById(R.id.btn_confirmer_choix)
         btnAnnulerChoix = findViewById(R.id.btn_annuler_choix)
+
         // Charge la gestion de Position GPS
         if (savedInstanceState != null) {
             requestingLocationUpdates = savedInstanceState.getBoolean(
@@ -83,6 +93,11 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
             .findFragmentById(R.id.map_choix) as SupportMapFragment
 
         mapFragment.getMapAsync(this)
+
+
+        btnConfirmerChoix.setOnClickListener {
+            dialogAjouterParcours().show()
+        }
 
         btnAnnulerChoix.setOnClickListener {
             supprimerChoix()
@@ -141,12 +156,7 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
                     nomPoint = "Point " + (points.size + 1).toString()
                 }
 
-                val point =
-                    marker.position.let { pos -> LatLng(pos.latitude, pos.longitude) }
-                        .let { it -> Point(it, nomPoint, 260F, 0x006e35e3) }
-
-                point.marker = marker
-                points.add(point)
+                points.add(Point(LatLng(marker.position.latitude, marker.position.longitude), nomPoint, 160F, 0x0035eaae))
                 markerActuel = marker
 
                 Log.d("listePOits", points.toString())
@@ -159,14 +169,37 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
             .create()
     }
 
-    private fun supprimerChoix() {
+    private fun dialogAjouterParcours(): AlertDialog {
+        val nomParcoursEditText = EditText(this)
 
+        return AlertDialog.Builder(this)
+            .setTitle(getString(R.string.titre_ajout_parcours_dialogue))
+            .setView(nomParcoursEditText)
+            .setMessage(getString(R.string.description_ajout_parcours_dialog))
+            .setPositiveButton(
+                getString(R.string.ajouter_point_dialog)
+            ) { _, _ ->
+
+                val nomParcours: String = nomParcoursEditText.text.toString()
+
+                val nouveauParcours = Parcours(nom = nomParcours, points = points)
+
+                rallySpeedrunRepository.addParcours(nouveauParcours)
+                this.finish()
+            }
+            .setNegativeButton(
+                getString(R.string.annuler_ajout)
+            ) {_, _ ->
+                //
+            }
+            .create()
+    }
+
+    private fun supprimerChoix() {
         if (points.isNotEmpty()) {
             points.last().marker?.remove()
             points.removeLast()
-
         }
-
     }
 
     /**
@@ -215,7 +248,6 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
      */
     private fun update(location: Location) {
         showLocation(location)
-
     }
 
     /**

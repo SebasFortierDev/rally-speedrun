@@ -11,6 +11,7 @@ import android.widget.Button
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import com.google.android.gms.maps.model.LatLng
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunTypeConverters
@@ -30,12 +31,10 @@ import java.lang.reflect.Type
  */
 class DemarrerActivity : AppCompatActivity() {
 
-
     private lateinit var btnCommencer: Button
     private lateinit var btnParcours: Button
 
     private lateinit var parcours: Parcours
-
 
     private val requestPermissionLauncher =
         registerForActivityResult(
@@ -54,7 +53,6 @@ class DemarrerActivity : AppCompatActivity() {
                 }
             }
         }
-
 
     /**
      * Initialisation de l'Activity.
@@ -89,7 +87,13 @@ class DemarrerActivity : AppCompatActivity() {
 
                     // Envoie du parcours désiré
                     val intent = Intent(this, MainActivity::class.java)
+                    val points = ArrayList<Point>()
+                    points.add(Point(LatLng(45.2956, -73.2726), "Point 1", 260F, 0x006e35e3))
+                    points.add(Point(LatLng(45.2956, -73.2681), "Point 2", 300F, 0x00eb36e9))
+                    points.add(Point(LatLng(45.2942, -73.2682), "Point 3", 120F, 0x0038ea37))
+                    points.add(Point(LatLng(45.2942, -73.2725), "Point 4", 160F, 0x0035eaae))
 
+                    parcours = Parcours(nom = "bip", points = points)
                     val parcoursString = fromParcours(parcours)
                     intent.putExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY", parcoursString )
 
@@ -111,7 +115,6 @@ class DemarrerActivity : AppCompatActivity() {
 
         btnParcours.setOnClickListener {
             val intent = Intent(this, ParcoursListActivity::class.java)
-
 
             startActivity(intent)
         }
@@ -154,7 +157,6 @@ class DemarrerActivity : AppCompatActivity() {
     }
 
     fun fromParcours(parcours: Parcours?): String {
-
         val gson = Gson()
         val type: Type = object : TypeToken<Parcours?>() {}.type
         return gson.toJson(parcours, type)

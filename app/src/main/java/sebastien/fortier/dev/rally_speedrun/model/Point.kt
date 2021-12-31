@@ -14,7 +14,6 @@ import com.google.android.gms.maps.model.Marker
  * @property marker Le Marqueur sur la map GoogleMap
  *
  * @author Sébastien Fortier
- * @author Ethan Leduc
  */
 data class Point(
     var position: LatLng,
