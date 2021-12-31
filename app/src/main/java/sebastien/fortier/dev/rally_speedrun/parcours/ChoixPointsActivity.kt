@@ -55,10 +55,9 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
     private var requestingLocationUpdates = false
 
     private var points = arrayListOf<Point>()
+    private var pointsMarker = arrayListOf<Marker>()
 
     private var markerPosition: Marker? = null
-
-    private var markerActuel: Marker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -131,6 +130,7 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
             val marker = googleMap.addMarker(MarkerOptions().position(it))
 
             if (marker != null) {
+                pointsMarker.add(marker)
                 dialogNomPoint(marker).show()
             }
 
@@ -157,7 +157,6 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 points.add(Point(LatLng(marker.position.latitude, marker.position.longitude), nomPoint, 160F, 0x0035eaae))
-                markerActuel = marker
 
                 Log.d("listePOits", points.toString())
             }
@@ -196,9 +195,18 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
     }
 
     private fun supprimerChoix() {
+
+        Log.d("annuler", "--avant--")
+        Log.d("annuler", points.toString())
+        Log.d("annuler", pointsMarker.toString())
         if (points.isNotEmpty()) {
-            points.last().marker?.remove()
+            pointsMarker.last().remove()
+            pointsMarker.removeLast()
+
             points.removeLast()
+            Log.d("annuler", "--Après--")
+            Log.d("annuler", points.toString())
+            Log.d("annuler", pointsMarker.toString())
         }
     }
 
