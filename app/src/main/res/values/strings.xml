@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">tp-map</string>
+    <string name="app_name">Rally Speedrun</string>
     <string name="commencer">COMMENCER</string>
     <string name="fin_dialogue_titre">BRAVO!!!!</string>
     <string name="fin_dialogue_positif">Recommencer</string>
@@ -24,4 +24,5 @@
     <string name="description_ajout_point_dialog">Veuillez saisir le nom du point si désiré</string>
     <string name="titre_ajout_parcours_dialogue">Ajouter parcours</string>
     <string name="description_ajout_parcours_dialog">Veuillez saisir le nom du parcours</string>
+    <string name="error_nom_parcours_vide">Le nom du parcours ne peut être vide</string>
 </resources>

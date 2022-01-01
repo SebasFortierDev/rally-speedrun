@@ -1,6 +1,9 @@
 package sebastien.fortier.dev.rally_speedrun.parcours
 
 import android.Manifest
+import android.app.Activity
+import android.content.DialogInterface
+import android.content.DialogInterface.OnShowListener
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
@@ -8,7 +11,6 @@ import android.os.Bundle
 import android.os.Looper
 import android.util.Log
 import android.widget.EditText
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
@@ -25,15 +27,13 @@ import com.google.android.gms.maps.model.MarkerOptions
 import sebastien.fortier.dev.rally_speedrun.R
 import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.util.concurrent.TimeUnit
-import android.text.Editable
 import android.widget.Button
-import android.content.Intent
-import android.net.Uri
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
-import java.lang.reflect.Type
+import android.view.View
+import android.widget.Toast
+import com.google.android.material.snackbar.Snackbar
+import java.time.Duration
 
 
 private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"
@@ -93,7 +93,6 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         mapFragment.getMapAsync(this)
 
-
         btnConfirmerChoix.setOnClickListener {
             dialogAjouterParcours().show()
         }
@@ -109,7 +108,6 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
             requestingLocationUpdates = true
             startLocationUpdates()
         }
-
     }
 
     /**
@@ -139,12 +137,14 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapEstChargee = true
     }
 
+
     private fun dialogNomPoint(marker : Marker): AlertDialog {
         val nomPointEditText = EditText(this)
 
         return AlertDialog.Builder(this)
             .setTitle(getString(R.string.titre_ajout_point_dialog))
             .setView(nomPointEditText)
+            .setCancelable(false)
             .setMessage(getString(R.string.description_ajout_point_dialog))
             .setPositiveButton(
                 getString(R.string.ajouter_point_dialog)
@@ -158,7 +158,6 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
 
                 points.add(Point(LatLng(marker.position.latitude, marker.position.longitude), nomPoint, 160F, 0x0035eaae))
 
-                Log.d("listePOits", points.toString())
             }
             .setNegativeButton(
                 getString(R.string.annuler_ajout)
@@ -171,42 +170,46 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
     private fun dialogAjouterParcours(): AlertDialog {
         val nomParcoursEditText = EditText(this)
 
-        return AlertDialog.Builder(this)
+        val dialog = AlertDialog.Builder(this)
             .setTitle(getString(R.string.titre_ajout_parcours_dialogue))
             .setView(nomParcoursEditText)
+            .setCancelable(false)
             .setMessage(getString(R.string.description_ajout_parcours_dialog))
-            .setPositiveButton(
-                getString(R.string.ajouter_point_dialog)
-            ) { _, _ ->
-
-                val nomParcours: String = nomParcoursEditText.text.toString()
-
-                val nouveauParcours = Parcours(nom = nomParcours, points = points)
-
-                rallySpeedrunRepository.addParcours(nouveauParcours)
-                this.finish()
-            }
+            .setPositiveButton( getString(R.string.ajouter_point_dialog), null)
             .setNegativeButton(
                 getString(R.string.annuler_ajout)
             ) {_, _ ->
-                //
+                // On ne fait rien
             }
             .create()
+
+        dialog.setOnShowListener {
+            val button =
+                (dialog).getButton(AlertDialog.BUTTON_POSITIVE)
+            button.setOnClickListener {
+                val nomParcours: String = nomParcoursEditText.text.toString()
+
+                if (nomParcours.isBlank()) {
+                    val mySnackbar = Snackbar.make(findViewById(R.id.map_choix), R.string.error_nom_parcours_vide, Snackbar.LENGTH_SHORT)
+                    mySnackbar.show()
+                }
+                else {
+                    val nouveauParcours = Parcours(nom = nomParcours, points = points)
+
+                    rallySpeedrunRepository.addParcours(nouveauParcours)
+                    this.finish()
+                    dialog.dismiss()
+                }
+            }
+        }
+        return dialog
     }
 
     private fun supprimerChoix() {
-
-        Log.d("annuler", "--avant--")
-        Log.d("annuler", points.toString())
-        Log.d("annuler", pointsMarker.toString())
         if (points.isNotEmpty()) {
             pointsMarker.last().remove()
             pointsMarker.removeLast()
-
             points.removeLast()
-            Log.d("annuler", "--Après--")
-            Log.d("annuler", points.toString())
-            Log.d("annuler", pointsMarker.toString())
         }
     }
 
