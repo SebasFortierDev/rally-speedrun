@@ -22,6 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Rallyspeedrun">
         <activity
+            android:name=".parcours.ChoixPointsActivity"
+            android:exported="false" />
+        <activity
             android:name=".parcours.ParcoursListActivity"
             android:exported="false" />
         <activity
@@ -37,7 +40,7 @@
         <activity
             android:name=".MainActivity"
             android:exported="false"
-            android:screenOrientation="portrait"></activity>
+            android:screenOrientation="portrait" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

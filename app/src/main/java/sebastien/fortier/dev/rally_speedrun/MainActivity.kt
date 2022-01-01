@@ -27,6 +27,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.lang.reflect.Type
@@ -155,8 +156,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
         // ...
     }
-
-    /**
+    private val rallySpeedrunRepository = RallySpeedrunRepository.get()    /**
      * Démarrage du Fragment.
      */
     override fun onStart() {
@@ -171,11 +171,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI)
 
         // Récupération du parcours envoyé
-        val parcoursString = intent.getStringExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY").toString()
-        val parcoursMap = toParcours(parcoursString)
-
-
+        // val parcoursString = intent.getStringExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY").toString()
+        // val parcoursMap = toParcours(parcoursString)
     }
+
 
     /**
      * Permet de sauvegarder l'état de la demande à travers les états de l'application
@@ -357,8 +356,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     }
 
     @TypeConverter
-    fun toParcours(parcoursString: String?): Parcours {
-
+    fun toParcours(parcoursString: String?): Parcours? {
+        if (parcoursString == null) {
+            return null
+        }
         val gson = Gson()
         val type: Type = object : TypeToken<Parcours?>() {}.type
         return gson.fromJson(parcoursString, type)
