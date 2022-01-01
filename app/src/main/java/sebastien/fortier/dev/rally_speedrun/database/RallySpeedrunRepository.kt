@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Room
 import kotlinx.coroutines.flow.Flow
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
+import java.util.*
 import java.util.concurrent.Executors
 
 /**
@@ -21,19 +22,34 @@ class RallySpeedrunRepository private constructor(context: Context) {
         .build()
 
     private val executor = Executors.newSingleThreadExecutor()
-    private val vinDao = database.rallySpeedrunDao()
+    private val parcoursDao = database.rallySpeedrunDao()
 
     /**
      * Permet de faire le lien avec le DAO et la base de données pour la fonction getParcours
      */
-    fun getParcours(): Flow<List<Parcours>> = vinDao.getParcours()
+    fun getParcours(): Flow<List<Parcours>> = parcoursDao.getParcours()
 
     /**
      * Permet de faire le lien avec le DAO et la base de données pour la méthode addParcours
      */
     fun addParcours(parcours: Parcours) {
         executor.execute {
-            vinDao.addParcours(parcours)
+            parcoursDao.addParcours(parcours)
+        }
+    }
+
+    /**
+     * Permet de faire le lien avec le DAO et la base de données pour la fonction getParcoursSelonId
+     */
+    fun getParcoursSelonId(id: UUID): Flow<Parcours?> = parcoursDao.getParcoursSelonId(id)
+
+
+    /**
+     * Permet de faire le lien avec le DAO et la base de données pour la méthode updateParcours
+     */
+    fun updateParcours(parcours: Parcours) {
+        executor.execute {
+            parcoursDao.updateParcours(parcours)
         }
     }
 

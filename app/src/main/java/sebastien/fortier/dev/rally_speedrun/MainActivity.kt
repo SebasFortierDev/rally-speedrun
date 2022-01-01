@@ -65,12 +65,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private lateinit var googleMap: GoogleMap
     private var mapEstChargee = false
 
+    private var parcours: Parcours = Parcours(nom = "", points = emptyList<Point>())
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private var requestingLocationUpdates = false
 
-    private val points = ArrayList<Point>()
+    private var points = emptyList<Point>()
 
     private var markerPosition: Marker? = null
 
@@ -78,7 +80,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private var compteurPasBase = -1f
     private lateinit var sensorManager: SensorManager
     private var sensor: Sensor? = null
-
 
 
     /**
@@ -120,11 +121,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
             }
         }
 
+        // Récupération du parcours envoyé
+        val parcoursString = intent.getStringExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY").toString()
+        val parcoursMap = toParcours(parcoursString)
+
+        if (parcoursMap != null) {
+            parcours = parcoursMap
+        }
+
         // Charge les points voulus dans la liste
-        points.add(Point(LatLng(45.2956, -73.2726), "Point 1", 260F, 0x006e35e3))
-        points.add(Point(LatLng(45.2956, -73.2681), "Point 2", 300F, 0x00eb36e9))
-        points.add(Point(LatLng(45.2942, -73.2682), "Point 3", 120F, 0x0038ea37))
-        points.add(Point(LatLng(45.2942, -73.2725), "Point 4", 160F, 0x0035eaae))
+        points = parcours.points
 
         // Charge la carte
         mapFragment = supportFragmentManager
@@ -156,9 +162,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
         // ...
     }
-    private val rallySpeedrunRepository = RallySpeedrunRepository.get()    /**
-     * Démarrage du Fragment.
-     */
+
+
     override fun onStart() {
         super.onStart()
 
@@ -170,9 +175,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
         txtPas.text = getString(R.string.nb_pas, "0")
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI)
 
-        // Récupération du parcours envoyé
-        // val parcoursString = intent.getStringExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY").toString()
-        // val parcoursMap = toParcours(parcoursString)
+
     }
 
 

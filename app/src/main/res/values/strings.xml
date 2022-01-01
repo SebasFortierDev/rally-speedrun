@@ -25,4 +25,16 @@
     <string name="titre_ajout_parcours_dialogue">Ajouter parcours</string>
     <string name="description_ajout_parcours_dialog">Veuillez saisir le nom du parcours</string>
     <string name="error_nom_parcours_vide">Le nom du parcours ne peut être vide</string>
+    <string name="label_choix_parcours">Parcours actuel</string>
+
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
 </resources>
