@@ -168,11 +168,11 @@ class ParcoursListActivity : AppCompatActivity() {
         ) { permissions ->
             when {
                 permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, ChoixPointsActivity::class.java)
                     startActivity(intent)
                 }
                 permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                    val intent = Intent(this, MainActivity::class.java)
+                    val intent = Intent(this, ChoixPointsActivity::class.java)
                     startActivity(intent)
                 }
                 else -> {
