@@ -42,9 +42,10 @@ class DemarrerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     private lateinit var btnCommencer: Button
     private lateinit var btnParcours: Button
 
-    private lateinit var parcours: Parcours
+    private var parcours: Parcours = Parcours(nom = "", points = emptyList())
 
-    private lateinit var listeParcoursActuel: List<Parcours>
+    private var listeParcoursActuel: List<Parcours> = emptyList()
+
     private val requestPermissionLauncher =
         registerForActivityResult(
             ActivityResultContracts.RequestMultiplePermissions()
@@ -72,11 +73,16 @@ class DemarrerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_demarrer)
 
+        btnCommencer = findViewById(R.id.btnCommencer)
+        btnParcours = findViewById(R.id.btnParcours)
+
         rallySpeedrunViewModel.parcoursLiveData.observe(
             this,
             { listeParcours ->
                 listeParcours?.let {
+
                     listeParcoursActuel = listeParcours
+
                     spinnerParcours = findViewById(R.id.parcours_spinner)
 
                     val choixParcours = ArrayList<String>()
@@ -94,14 +100,16 @@ class DemarrerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                     if (ParcoursActuel.getStoredParcours(this) != "") {
                         spinnerParcours.setSelection(ParcoursActuel.getStoredParcours(this).toInt())
                         parcours = listeParcours[ParcoursActuel.getStoredParcours(this).toInt()]
-                        Log.d("parcours", parcours.toString())
                     }
+
+                    // Mettra à jour le bouton commencer parcours
+                    btnCommencer.isEnabled = listeParcoursActuel.isNotEmpty()
+
+
                 }
             }
         )
 
-        btnCommencer = findViewById(R.id.btnCommencer)
-        btnParcours = findViewById(R.id.btnParcours)
     }
 
     /**
@@ -109,6 +117,9 @@ class DemarrerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
      */
     override fun onStart() {
         super.onStart()
+
+        // Mettra à jour le bouton commencer parcours
+        btnCommencer.isEnabled = listeParcoursActuel.isNotEmpty()
 
         btnCommencer.setOnClickListener {
 
