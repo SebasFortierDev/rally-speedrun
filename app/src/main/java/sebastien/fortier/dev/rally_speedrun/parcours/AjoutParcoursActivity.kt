@@ -1,15 +1,11 @@
 package sebastien.fortier.dev.rally_speedrun.parcours
 
 import android.Manifest
-import android.app.Activity
-import android.content.DialogInterface
-import android.content.DialogInterface.OnShowListener
 import android.content.pm.PackageManager
 import android.location.Location
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.widget.EditText
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.content.res.AppCompatResources
@@ -30,15 +26,35 @@ import java.util.concurrent.TimeUnit
 import android.widget.Button
 import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
-import android.view.View
-import android.widget.Toast
 import com.google.android.material.snackbar.Snackbar
-import java.time.Duration
 
-
+/** Clé pour les requêtes de location */
 private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"
 
-class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
+/**
+ * Classe AjoutParcoursActivity
+ *
+ * Activity permettant la création d'un parcours
+ *
+ * @property rallySpeedrunRepository Voir [RallySpeedrunRepository]
+ *
+ * @property btnConfirmerChoix Bouton permettant l'ajout d'un parcours
+ * @property btnAnnulerChoix Bouton permettant de supprimer le dernier point ajouter
+ *
+ * @property mapFragment Fragment de la carte GoogleMap
+ * @property googleMap Object GoogleMap
+ * @property fusedLocationClient Provider de la location de l'utilisateur
+ * @property locationRequest Requête pour obtenir la localisation
+ * @property locationCallback Callback de la location
+ * @property points Points du parcours ajouté par l'utilisateur
+ * @property pointsMarker Markers des points ajouté par l'utilisateur
+ * @property requestingLocationUpdates Permet de savoir si on est entrain de faire des requêtes de location
+ * @property mapEstChargee Permet de savoir si la carte google map est chargé ou non
+ * @property markerPosition Marker affichant la position de l'utilisateur
+ *
+ * @author Sébastien Fortier
+ */
+class AjoutParcoursActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private val rallySpeedrunRepository = RallySpeedrunRepository.get()
 
@@ -47,22 +63,24 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mapFragment: SupportMapFragment
     private lateinit var googleMap: GoogleMap
-    private var mapEstChargee = false
-
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
-    private var requestingLocationUpdates = false
 
     private var points = arrayListOf<Point>()
     private var pointsMarker = arrayListOf<Marker>()
-
+    private var requestingLocationUpdates = false
+    private var mapEstChargee = false
     private var markerPosition: Marker? = null
 
+    /**
+     * Initialisation de l'Activity.
+     *
+     * @param savedInstanceState Les données conservées au changement d'état.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_choix_points)
-
+        setContentView(R.layout.activity_ajout_parcours)
 
         btnConfirmerChoix = findViewById(R.id.btn_confirmer_choix)
         btnAnnulerChoix = findViewById(R.id.btn_annuler_choix)
@@ -94,7 +112,13 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
         mapFragment.getMapAsync(this)
 
         btnConfirmerChoix.setOnClickListener {
-            dialogAjouterParcours().show()
+            if (points.isEmpty()) {
+                val mySnackbar = Snackbar.make(findViewById(R.id.map_choix), R.string.erreur_liste_points_vide, Snackbar.LENGTH_SHORT)
+                mySnackbar.show()
+            }
+            else {
+                dialogAjouterParcours().show()
+            }
         }
 
         btnAnnulerChoix.setOnClickListener {
@@ -102,6 +126,9 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
         }
     }
 
+    /**
+     * Démarrage de l'activity.
+     */
     override fun onStart() {
         super.onStart()
         if (!requestingLocationUpdates) {
@@ -113,32 +140,45 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
     /**
      * Permet de sauvegarder l'état de la demande à travers les états de l'application
      *
-     * @param outState la donnée qu'on veut sauvegarder
+     * @param outState Donnée qu'on veut sauvegarder
      */
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putBoolean(REQUESTING_LOCATION_UPDATES_KEY, requestingLocationUpdates)
         super.onSaveInstanceState(outState)
     }
 
+    /**
+     * Permet d'éxécuter des actions lorsque le chargement de la carte est fait
+     *
+     * @param map La carte GoogleMap
+     */
     override fun onMapReady(map: GoogleMap) {
         googleMap = map
 
         googleMap.setOnMapClickListener {
-
             val marker = googleMap.addMarker(MarkerOptions().position(it))
 
             if (marker != null) {
                 pointsMarker.add(marker)
                 dialogNomPoint(marker).show()
             }
-
         }
 
         mapEstChargee = true
     }
 
-
+    /**
+     * Dialog s'affichant lorsque l'utilisateur veut ajouter un point
+     *
+     * Il contient un champ pour associer un nom au point et un bouton
+     * permettant de l'ajouter au parcours
+     *
+     * @param marker Le marker que l'utilisateur veut ajouter
+     *
+     * @return Le dialog permettant d'ajouter un point
+     */
     private fun dialogNomPoint(marker : Marker): AlertDialog {
+        // Champ pour le nom du point
         val nomPointEditText = EditText(this)
 
         return AlertDialog.Builder(this)
@@ -149,7 +189,6 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
             .setPositiveButton(
                 getString(R.string.ajouter_point_dialog)
             ) { _, _ ->
-
                 var nomPoint: String = nomPointEditText.text.toString()
 
                 if (nomPoint.isEmpty()) {
@@ -157,7 +196,6 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
                 }
 
                 points.add(Point(LatLng(marker.position.latitude, marker.position.longitude), nomPoint, 160F, 0x0035eaae))
-
             }
             .setNegativeButton(
                 getString(R.string.annuler_ajout)
@@ -167,6 +205,14 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
             .create()
     }
 
+    /**
+     * Dialog s'affichant lorsque l'utilisateur veut ajouter le parcours
+     *
+     * Il contient un champ pour associer un nom au parcours et un bouton
+     * permettant de l'ajouter à ses parcours
+     *
+     * @return Le dialog permettant d'ajouter un parcours
+     */
     private fun dialogAjouterParcours(): AlertDialog {
         val nomParcoursEditText = EditText(this)
 
@@ -183,14 +229,15 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
             }
             .create()
 
+        // Overide du click positif d'un alert dialog afin qu'il ne se ferme pas automatiquement
         dialog.setOnShowListener {
-            val button =
-                (dialog).getButton(AlertDialog.BUTTON_POSITIVE)
+            val button = (dialog).getButton(AlertDialog.BUTTON_POSITIVE)
+
             button.setOnClickListener {
                 val nomParcours: String = nomParcoursEditText.text.toString()
 
                 if (nomParcours.isBlank()) {
-                    val mySnackbar = Snackbar.make(findViewById(R.id.map_choix), R.string.error_nom_parcours_vide, Snackbar.LENGTH_SHORT)
+                    val mySnackbar = Snackbar.make(findViewById(R.id.map_choix), R.string.erreur_nom_parcours_vide, Snackbar.LENGTH_SHORT)
                     mySnackbar.show()
                 }
                 else {
@@ -205,6 +252,9 @@ class ChoixPointsActivity : AppCompatActivity(), OnMapReadyCallback {
         return dialog
     }
 
+    /**
+     * Permet de supprimer le dernier point ajouter
+     */
     private fun supprimerChoix() {
         if (points.isNotEmpty()) {
             pointsMarker.last().remove()

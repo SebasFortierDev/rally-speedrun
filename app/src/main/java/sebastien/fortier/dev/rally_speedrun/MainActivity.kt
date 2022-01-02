@@ -10,7 +10,6 @@ import android.hardware.SensorManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.widget.Chronometer
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -18,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.room.TypeConverter
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -27,7 +25,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.lang.reflect.Type
@@ -65,12 +62,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private lateinit var googleMap: GoogleMap
     private var mapEstChargee = false
 
+    private var parcours: Parcours = Parcours(nom = "", points = emptyList())
+
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
     private lateinit var locationCallback: LocationCallback
     private var requestingLocationUpdates = false
 
-    private val points = ArrayList<Point>()
+    private var points = emptyList<Point>()
 
     private var markerPosition: Marker? = null
 
@@ -78,7 +77,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private var compteurPasBase = -1f
     private lateinit var sensorManager: SensorManager
     private var sensor: Sensor? = null
-
 
 
     /**
@@ -120,11 +118,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
             }
         }
 
+        // Récupération du parcours envoyé
+        val parcoursString = intent.getStringExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY").toString()
+        val parcoursMap = toParcours(parcoursString)
+
+        if (parcoursMap != null) {
+            parcours = parcoursMap
+        }
+
         // Charge les points voulus dans la liste
-        points.add(Point(LatLng(45.2956, -73.2726), "Point 1", 260F, 0x006e35e3))
-        points.add(Point(LatLng(45.2956, -73.2681), "Point 2", 300F, 0x00eb36e9))
-        points.add(Point(LatLng(45.2942, -73.2682), "Point 3", 120F, 0x0038ea37))
-        points.add(Point(LatLng(45.2942, -73.2725), "Point 4", 160F, 0x0035eaae))
+        points = parcours.points
 
         // Charge la carte
         mapFragment = supportFragmentManager
@@ -156,8 +159,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     override fun onAccuracyChanged(p0: Sensor?, p1: Int) {
         // ...
     }
-    private val rallySpeedrunRepository = RallySpeedrunRepository.get()    /**
-     * Démarrage du Fragment.
+
+    /**
+     * Démarrage de l'activity.
      */
     override fun onStart() {
         super.onStart()
@@ -169,12 +173,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
         txtPas.text = getString(R.string.nb_pas, "0")
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI)
-
-        // Récupération du parcours envoyé
-        // val parcoursString = intent.getStringExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY").toString()
-        // val parcoursMap = toParcours(parcoursString)
     }
-
 
     /**
      * Permet de sauvegarder l'état de la demande à travers les états de l'application
@@ -355,8 +354,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
             .create()
     }
 
-    @TypeConverter
-    fun toParcours(parcoursString: String?): Parcours? {
+    /**
+     * Permet de transformer un parcours qui est en JSON en objet
+     *
+     * @param parcoursString Objet parcours en JSON
+     *
+     * @return Un objet parcours
+     */
+    private fun toParcours(parcoursString: String?): Parcours? {
         if (parcoursString == null) {
             return null
         }

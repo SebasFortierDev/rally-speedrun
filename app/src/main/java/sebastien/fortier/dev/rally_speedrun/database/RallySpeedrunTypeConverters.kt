@@ -7,6 +7,13 @@ import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.lang.reflect.Type
 import java.util.*
 
+/**
+ * Classe RallySpeedrunTypeConverters
+ *
+ * Permet de convertir les types afin de pouvoir les storer dans la base de données
+ *
+ * @author Sébastien Fortier
+ */
 class RallySpeedrunTypeConverters {
 
     /**
@@ -33,6 +40,13 @@ class RallySpeedrunTypeConverters {
         return UUID.fromString(uuid)
     }
 
+    /**
+     * Permet de transformer une liste de points en JSON
+     *
+     * @param listePoints La liste de points qu'on veut transformer
+     *
+     * @return La liste de points en JSON
+     */
     @TypeConverter
     fun fromListePoints(listePoints: List<Point?>?): String? {
         if (listePoints == null) {
@@ -43,6 +57,13 @@ class RallySpeedrunTypeConverters {
         return gson.toJson(listePoints, type)
     }
 
+    /**
+     * Permet de transformer une liste de points qui est en JSON en objet
+     *
+     * @param listePointsString La liste de points en JSON
+     *
+     * @return Un objet List contenant les points
+     */
     @TypeConverter
     fun toListePoints(listePointsString: String?): List<Point?>? {
         if (listePointsString == null) {
