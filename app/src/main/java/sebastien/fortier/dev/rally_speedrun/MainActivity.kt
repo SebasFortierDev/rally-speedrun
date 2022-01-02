@@ -10,7 +10,6 @@ import android.hardware.SensorManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.widget.Chronometer
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
@@ -18,7 +17,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.room.TypeConverter
 import com.google.android.gms.location.*
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -27,7 +25,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.lang.reflect.Type
@@ -65,7 +62,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private lateinit var googleMap: GoogleMap
     private var mapEstChargee = false
 
-    private var parcours: Parcours = Parcours(nom = "", points = emptyList<Point>())
+    private var parcours: Parcours = Parcours(nom = "", points = emptyList())
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -163,7 +160,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
         // ...
     }
 
-
+    /**
+     * Démarrage de l'activity.
+     */
     override fun onStart() {
         super.onStart()
 
@@ -174,10 +173,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
         txtPas.text = getString(R.string.nb_pas, "0")
         sensorManager.registerListener(this, sensor, SensorManager.SENSOR_DELAY_UI)
-
-
     }
-
 
     /**
      * Permet de sauvegarder l'état de la demande à travers les états de l'application
@@ -358,8 +354,14 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
             .create()
     }
 
-    @TypeConverter
-    fun toParcours(parcoursString: String?): Parcours? {
+    /**
+     * Permet de transformer un parcours qui est en JSON en objet
+     *
+     * @param parcoursString Objet parcours en JSON
+     *
+     * @return Un objet parcours
+     */
+    private fun toParcours(parcoursString: String?): Parcours? {
         if (parcoursString == null) {
             return null
         }

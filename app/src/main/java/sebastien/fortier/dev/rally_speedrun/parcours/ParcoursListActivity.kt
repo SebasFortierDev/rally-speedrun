@@ -15,29 +15,67 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import sebastien.fortier.dev.rally_speedrun.MainActivity
 import sebastien.fortier.dev.rally_speedrun.R
 import sebastien.fortier.dev.rally_speedrun.RallySpeedrunViewModel
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 
+/**
+ * Classe ParcoursListActivity
+ *
+ *
+ * @property rallySpeedrunViewModel ViewModel de l'application
+ *
+ * @property btnAjouterParcours Bouton chargeant l'activity permettant l'ajout d'un parcours
+ * @property parcoursRecyclerView RecyclerView affichant la liste des parcours
+ * @property adapter Adapter pour le recyclerView affichant la liste des parcours
+ * @property requestPermissionLauncher Launcher pour demander les permissions à l'utilisateur
+ *
+ * @author Sébastien Fortier
+ */
 class ParcoursListActivity : AppCompatActivity() {
     private val rallySpeedrunViewModel: RallySpeedrunViewModel by viewModels()
 
     private lateinit var btnAjouterParcours: Button
-
     private lateinit var parcoursRecyclerView: RecyclerView
     private var adapter: ParcoursAdapter? = ParcoursAdapter(emptyList())
+    private val requestPermissionLauncher =
+        registerForActivityResult(
+            ActivityResultContracts.RequestMultiplePermissions()
+        ) { permissions ->
+            when {
+                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
+                    val intent = Intent(this, AjoutParcoursActivity::class.java)
+                    startActivity(intent)
+                }
+                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
+                    val intent = Intent(this, AjoutParcoursActivity::class.java)
+                    startActivity(intent)
+                }
+                else -> {
+                    dialogRefuse().show()
+                }
+            }
+        }
 
+    /**
+     * Initialisation de l'Activity.
+     *
+     * @param savedInstanceState Les données conservées au changement d'état.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_parcours_list)
+
+        btnAjouterParcours = findViewById(R.id.btn_ajout_parcours)
+
         parcoursRecyclerView = findViewById(R.id.parcours_recycler_view)
         parcoursRecyclerView.layoutManager = LinearLayoutManager(this)
         parcoursRecyclerView.adapter = adapter
-
-        btnAjouterParcours = findViewById(R.id.btn_ajout_parcours)
     }
 
+    /**
+     * Démarrage de l'activity.
+     */
     override fun onStart() {
         super.onStart()
 
@@ -52,7 +90,7 @@ class ParcoursListActivity : AppCompatActivity() {
                             Manifest.permission.ACCESS_COARSE_LOCATION
                         ) == PackageManager.PERMISSION_GRANTED -> {
 
-                    val intent = Intent(this, ChoixPointsActivity::class.java)
+                    val intent = Intent(this, AjoutParcoursActivity::class.java)
 
                     startActivity(intent)
                 }
@@ -86,7 +124,7 @@ class ParcoursListActivity : AppCompatActivity() {
     /**
      * Met à jour la vue en fonction des données du ViewModel.
      *
-     * @param preuves La liste des preuves
+     * @param listeParcours Liste des parcours
      */
     private fun updateUI(listeParcours: List<Parcours>) {
         adapter = ParcoursAdapter(listeParcours)
@@ -95,7 +133,11 @@ class ParcoursListActivity : AppCompatActivity() {
 
     /**
      * Classe PreuveHolder
-
+     *
+     * @property parcours Parcours du holder
+     * @property nomParcours TextView affichant
+     *
+     * @param view Vue du holder
      */
     private inner class ParcoursHolder(view: View) : RecyclerView.ViewHolder(view),
         View.OnClickListener {
@@ -107,12 +149,11 @@ class ParcoursListActivity : AppCompatActivity() {
         }
 
         /**
-         * @param preuve Le preuve à associer au ViewHolder.
+         * @param parcours Parcours à associer au ViewHolder.
          */
         fun bind(parcours: Parcours) {
             this.parcours = parcours
             nomParcours.text = parcours.nom
-
         }
 
         /**
@@ -128,6 +169,7 @@ class ParcoursListActivity : AppCompatActivity() {
     /**
      * Classe PreuveAdapter
      *
+     * @param listeParcours Liste des parcours
      */
     private inner class ParcoursAdapter(var listeParcours: List<Parcours>) :
         RecyclerView.Adapter<ParcoursHolder>() {
@@ -162,24 +204,6 @@ class ParcoursListActivity : AppCompatActivity() {
         override fun getItemCount(): Int = listeParcours.size
     }
 
-    private val requestPermissionLauncher =
-        registerForActivityResult(
-            ActivityResultContracts.RequestMultiplePermissions()
-        ) { permissions ->
-            when {
-                permissions.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false) -> {
-                    val intent = Intent(this, ChoixPointsActivity::class.java)
-                    startActivity(intent)
-                }
-                permissions.getOrDefault(Manifest.permission.ACCESS_COARSE_LOCATION, false) -> {
-                    val intent = Intent(this, ChoixPointsActivity::class.java)
-                    startActivity(intent)
-                }
-                else -> {
-                    dialogRefuse().show()
-                }
-            }
-        }
 
     /**
      * Création de la boite de dialogue pour expliquer les

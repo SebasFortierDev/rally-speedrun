@@ -8,6 +8,13 @@ import kotlinx.coroutines.flow.Flow
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import java.util.*
 
+/**
+ * Interface RallySpeedrunDao
+ *
+ * Dao permettant l'accès à la base de données
+ *
+ * @author Sébastien Fortier
+ */
 @Dao
 interface RallySpeedrunDao {
     /**
@@ -31,7 +38,7 @@ interface RallySpeedrunDao {
     /**
      * Permet d'updater un parcours déjà présent dans la base de données
      *
-     * @param vin Le parcours qu'on veut updater
+     * @param parcours Le parcours qu'on veut updater
      */
     @Update
     fun updateParcours(parcours: Parcours)

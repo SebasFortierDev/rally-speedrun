@@ -9,9 +9,23 @@ import java.util.concurrent.Executors
 
 /**
  * Permet de définir le nom de la base de données de l'application
+ *
  */
 private const val DATABASE_NAME = "rallySpeedrun-database"
 
+/**
+ * Classe RallySpeedrunRepository
+
+ * Repository donnant accès au DAO pour accéder au informations de la base de données
+ *
+ * @param context Context de l'application
+ *
+ * @property database La base de donnée de l'application
+ * @property executor Executor permettant d'éxécuter des requêtes
+ * @property parcoursDao Le DAO de la base de données
+ *
+ * @author Sébastien Fortier
+ */
 class RallySpeedrunRepository private constructor(context: Context) {
 
     private val database: RallySpeedrunDatabase = Room.databaseBuilder(

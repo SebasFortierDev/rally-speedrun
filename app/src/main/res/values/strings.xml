@@ -13,9 +13,6 @@
     <string name="label_logo">Logo</string>
     <string name="mes_parcours">MES PARCOURS</string>
     <string name="ajout_parcours">Ajouter un parcours</string>
-    <string name="nom_parcours_label">Nom du parcours</string>
-    <string name="btn_choisir_points">CHOISIR MES POINTS</string>
-    <string name="confirmer">CONFIRMER</string>
     <string name="annuler_choix">ANNULER CHOIX</string>
     <string name="confirmer_choix">CONFIRMER CHOIX</string>
     <string name="ajouter_point_dialog">AJOUTER</string>
@@ -24,17 +21,7 @@
     <string name="description_ajout_point_dialog">Veuillez saisir le nom du point si désiré</string>
     <string name="titre_ajout_parcours_dialogue">Ajouter parcours</string>
     <string name="description_ajout_parcours_dialog">Veuillez saisir le nom du parcours</string>
-    <string name="error_nom_parcours_vide">Le nom du parcours ne peut être vide</string>
-    <string name="label_choix_parcours">Parcours actuel</string>
-
-    <string-array name="planets_array">
-        <item>Mercury</item>
-        <item>Venus</item>
-        <item>Earth</item>
-        <item>Mars</item>
-        <item>Jupiter</item>
-        <item>Saturn</item>
-        <item>Uranus</item>
-        <item>Neptune</item>
-    </string-array>
+    <string name="erreur_nom_parcours_vide">Le nom du parcours ne peut être vide</string>
+    <string name="label_choix_parcours">Choix du parcours</string>
+    <string name="erreur_liste_points_vide">Le parcours doit contenir au moins un point</string>
 </resources>
