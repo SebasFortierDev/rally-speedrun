@@ -367,8 +367,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
                 parcours.essais.add(essai)
 
                 val pointsEssai = ArrayList<Point>()
-                for (point in parcours.points) {
-                    pointsEssai.add(Point(point.position, point.nom, point.couleurHue, point.couleurHexa))
+                for (point in points) {
+                    pointsEssai.add(Point(point.position, point.nom, point.couleurHue, point.couleurHexa, point.estVisite, point.tempsVisite))
                 }
 
                 essai.points = pointsEssai
