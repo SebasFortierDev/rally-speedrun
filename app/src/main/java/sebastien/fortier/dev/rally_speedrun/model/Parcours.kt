@@ -3,6 +3,7 @@ package sebastien.fortier.dev.rally_speedrun.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * Classe Parcours
@@ -17,5 +18,10 @@ import java.util.*
 data class Parcours (
     @PrimaryKey val id: UUID = UUID.randomUUID(),
     var nom: String,
-    var points: List<Point>
-)
+    var points: List<Point> = emptyList(),
+    var essais: MutableList<Essai> = mutableListOf(),
+) {
+    fun ajouterEssai(essai : Essai) {
+        essais.add(essai)
+    }
+}

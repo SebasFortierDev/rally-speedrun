@@ -146,7 +146,7 @@ class DemarrerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
 
                     val nomParcours = parcours.nom
                     val pointsParcours = parcours.points
-                    parcours = Parcours(nom = nomParcours, points = pointsParcours)
+                    parcours = Parcours(id = parcours.id, nom = nomParcours, points = pointsParcours, essais = parcours.essais)
                     val parcoursString = fromParcours(parcours)
                     intent.putExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY", parcoursString )
 

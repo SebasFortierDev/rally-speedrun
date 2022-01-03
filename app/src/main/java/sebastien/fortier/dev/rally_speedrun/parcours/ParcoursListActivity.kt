@@ -64,6 +64,7 @@ class ParcoursListActivity : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setTitle(R.string.mes_parcours_titre)
         setContentView(R.layout.activity_parcours_list)
 
         btnAjouterParcours = findViewById(R.id.btn_ajout_parcours)

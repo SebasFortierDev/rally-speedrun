@@ -23,9 +23,11 @@
         android:theme="@style/Theme.Rallyspeedrun">
         <activity
             android:name=".parcours.AjoutParcoursActivity"
+            android:parentActivityName=".parcours.ParcoursListActivity"
             android:exported="false" />
         <activity
             android:name=".parcours.ParcoursListActivity"
+            android:parentActivityName=".DemarrerActivity"
             android:exported="false" />
         <activity
             android:name=".DemarrerActivity"
@@ -39,6 +41,7 @@
         </activity>
         <activity
             android:name=".MainActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:exported="false"
             android:screenOrientation="portrait" />
 

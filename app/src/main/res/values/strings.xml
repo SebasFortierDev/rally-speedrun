@@ -24,4 +24,5 @@
     <string name="erreur_nom_parcours_vide">Le nom du parcours ne peut être vide</string>
     <string name="label_choix_parcours">Choix du parcours</string>
     <string name="erreur_liste_points_vide">Le parcours doit contenir au moins un point</string>
+    <string name="mes_parcours_titre">Mes parcours</string>
 </resources>

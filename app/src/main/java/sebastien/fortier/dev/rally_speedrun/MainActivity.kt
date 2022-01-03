@@ -10,8 +10,10 @@ import android.hardware.SensorManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.widget.Chronometer
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -25,9 +27,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
+import sebastien.fortier.dev.rally_speedrun.model.Essai
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.lang.reflect.Type
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -55,6 +60,9 @@ private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES
  * @author Sébastien Fortier
  */
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListener {
+    private val rallySpeedrunViewModel: RallySpeedrunViewModel by viewModels()
+    private val rallySpeedrunRepository = RallySpeedrunRepository.get()
+
     private lateinit var txtPas: TextView
     private lateinit var chrono: Chronometer
 
@@ -63,6 +71,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private var mapEstChargee = false
 
     private var parcours: Parcours = Parcours(nom = "", points = emptyList())
+
+    private var essai: Essai = Essai(parcours = parcours)
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -87,7 +97,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        actionBar?.hide()
         // Charge l'affichage du nb de pas et du chronometre
         txtPas = findViewById(R.id.nb_pas)
         chrono = findViewById(R.id.chronometer)
@@ -124,6 +134,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
         if (parcoursMap != null) {
             parcours = parcoursMap
+            Log.d("parcoursMapRecu" , parcoursMap.toString())
+            Log.d("parcoursMapAssocié" , parcours.toString())
         }
 
         // Charge les points voulus dans la liste
@@ -331,6 +343,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
                 val bitmap = AppCompatResources.getDrawable(this, R.drawable.ic_baseline_check_circle_outline_24)?.toBitmap()
                 point.marker?.setIcon(bitmap?.let { BitmapDescriptorFactory.fromBitmap(it) })
                 point.estVisite = true
+                point.tempsVisite = chrono.text.toString()
             }
         }
     }
@@ -349,10 +362,32 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
             .setPositiveButton(
                 getString(R.string.fin_dialogue_positif)
             ) { _, _ ->
+                essai.dureeTotal = chrono.text.toString()
+                //parcours.essais.add(essai)
+                parcours.essais.add(essai)
+                //var nouveauPoints = arrayListOf<Point>()
+
+                //var nouveauEssai = arrayListOf<Essai>()
+                //nouveauPoints = parcours.points as ArrayList<Point>
+
+                //val nouveauParcours = Parcours(id = parcours.id, nom = "ALLO", points = nouveauPoints, essais = nouveauEssai)
+
+                //rallySpeedrunViewModel.updateParcours(parcours)
+
+                val parcoursId = UUID.fromString(parcours.id.toString())
+                //val parcoursNom = parcours.nom
+
+                //val parcoursPoints = points
+
+                //val nouveauParcours = Parcours(id = parcoursId, nom = parcoursNom, essais = parcours.essais)
+
+                rallySpeedrunRepository.updateEssai(parcoursId, parcours.essais)
+
                 this.finish()
             }
             .create()
     }
+
 
     /**
      * Permet de transformer un parcours qui est en JSON en objet
