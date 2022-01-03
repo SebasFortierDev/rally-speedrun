@@ -35,6 +35,22 @@ import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.lang.reflect.Type
 import java.util.*
 import java.util.concurrent.TimeUnit
+import com.google.android.gms.maps.model.LatLng
+
+import com.google.android.gms.maps.model.PolylineOptions
+
+import com.google.android.gms.maps.model.Polyline
+import androidx.lifecycle.Transformations.map
+
+import com.google.android.gms.maps.CameraUpdate
+
+import com.google.android.gms.maps.model.CameraPosition
+
+
+
+
+
+
 
 
 private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"
@@ -123,8 +139,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         locationRequest = LocationRequest.create().apply {
-            interval = TimeUnit.SECONDS.toMillis(10)
-            fastestInterval = TimeUnit.SECONDS.toMillis(5)
+            interval = TimeUnit.SECONDS.toMillis(1)
+            fastestInterval = TimeUnit.SECONDS.toMillis(1)
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
@@ -312,7 +328,27 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
             markerPosition?.setIcon(bitmap?.let { BitmapDescriptorFactory.fromBitmap(it) })
             markerPosition?.alpha  = 10F
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 15f))
+
+
+            googleMap.animateCamera(
+                CameraUpdateFactory.newLatLngZoom(
+                    LatLng(
+                        location.latitude,
+                        location.longitude
+                    ), 15.0f
+                )
+            )
+
+            if (derniereLocation != null) {
+                googleMap.addPolyline(
+                    PolylineOptions()
+                        .clickable(true)
+                        .geodesic(true)
+                        .add(
+                            derniereLocation?.let { LatLng(it.latitude, it.longitude) },
+                            LatLng(location.latitude, location.longitude),
+                        ))
+            }
         }
     }
 
