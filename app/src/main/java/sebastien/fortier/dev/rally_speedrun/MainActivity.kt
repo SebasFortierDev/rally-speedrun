@@ -72,7 +72,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
     private var parcours: Parcours = Parcours(nom = "", points = emptyList())
 
-    private var essai: Essai = Essai(parcours = parcours)
+    private var essai: Essai = Essai()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -363,25 +363,16 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
                 getString(R.string.fin_dialogue_positif)
             ) { _, _ ->
                 essai.dureeTotal = chrono.text.toString()
-                //parcours.essais.add(essai)
+
                 parcours.essais.add(essai)
-                //var nouveauPoints = arrayListOf<Point>()
 
-                //var nouveauEssai = arrayListOf<Essai>()
-                //nouveauPoints = parcours.points as ArrayList<Point>
+                val pointsEssai = ArrayList<Point>()
+                for (point in parcours.points) {
+                    pointsEssai.add(Point(point.position, point.nom, point.couleurHue, point.couleurHexa))
+                }
 
-                //val nouveauParcours = Parcours(id = parcours.id, nom = "ALLO", points = nouveauPoints, essais = nouveauEssai)
-
-                //rallySpeedrunViewModel.updateParcours(parcours)
-
-                val parcoursId = UUID.fromString(parcours.id.toString())
-                //val parcoursNom = parcours.nom
-
-                //val parcoursPoints = points
-
-                //val nouveauParcours = Parcours(id = parcoursId, nom = parcoursNom, essais = parcours.essais)
-
-                rallySpeedrunRepository.updateEssai(parcoursId, parcours.essais)
+                essai.points = pointsEssai
+                rallySpeedrunRepository.updateEssai(parcours.id, parcours.essais)
 
                 this.finish()
             }

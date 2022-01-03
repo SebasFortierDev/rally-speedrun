@@ -10,6 +10,6 @@ import java.util.*
  */
 data class Essai (
     var id: UUID = UUID.randomUUID(),
-    var parcours: Parcours,
+    var points: List<Point> = emptyList(),
     var dureeTotal: String = ""
 )
