@@ -42,17 +42,22 @@ private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES
 /**
  * Activity principal qui contient la carte de Google map
  *
+ * @property rallySpeedrunRepository Voir [RallySpeedrunRepository]
  * @property txtPas Texte affichant le nombre de pas
  * @property chrono Le chronomètre dans la vue
  * @property mapFragment Le fragment contenant la carte
  * @property googleMap L'objet Google Map permettant d'accéder au méthodes de la carte
  * @property mapEstChargee Permet de savoir si la carte a été chargé ou non
+ * @property parcours Parcours actuel
+ * @property essai Essai actuel
  * @property fusedLocationClient Client pour accéder au location provider
  * @property locationRequest Permet de faire les requêtes pour la location
  * @property locationCallback Permet d'obtenir le retour du provider
  * @property requestingLocationUpdates Permet de savoir si on est entrain de demander la location
  * @property points Liste des points du rally
  * @property markerPosition Marker indiquant la position de l'utilisateur
+ * @property distance La distance parcourue durant l'essai
+ * @property derniereLocation Location depuis le dernier update de la position
  * @property compteurPas Le compteur de pas depuis le début du rally
  * @property compteurPasBase Le nombre de pas au début du rally
  * @property sensorManager Permet de gérer l'utilisations des sensors du téléphone
@@ -340,20 +345,25 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
         val resultats: FloatArray = floatArrayOf(0.00f)
 
         points.forEachIndexed { index, point ->
-            // IZI
-        }
-
-        for(point in points) {
             Location.distanceBetween(location.latitude, location.longitude, point.position.latitude, point.position.longitude, resultats)
 
             if (resultats[0] <= 100) {
-                val bitmap = AppCompatResources.getDrawable(this, R.drawable.ic_baseline_check_circle_outline_24)?.toBitmap()
-                point.marker?.setIcon(bitmap?.let { BitmapDescriptorFactory.fromBitmap(it) })
-                point.estVisite = true
-                point.tempsVisite = chrono.text.toString()
+                if (index == 0) {
+                    val bitmap = AppCompatResources.getDrawable(this, R.drawable.ic_baseline_check_circle_outline_24)?.toBitmap()
+                    point.marker?.setIcon(bitmap?.let { BitmapDescriptorFactory.fromBitmap(it) })
+                    point.estVisite = true
+                    point.tempsVisite = chrono.text.toString()
+                }
+                else if (points[index - 1].estVisite) {
+                    val bitmap = AppCompatResources.getDrawable(this, R.drawable.ic_baseline_check_circle_outline_24)?.toBitmap()
+                    point.marker?.setIcon(bitmap?.let { BitmapDescriptorFactory.fromBitmap(it) })
+                    point.estVisite = true
+                    point.tempsVisite = chrono.text.toString()
+                }
             }
         }
     }
+
 
     /**
      * Permet de calculer la distance entre la position de l'utilisateur et sa dernière position sauvegardé
