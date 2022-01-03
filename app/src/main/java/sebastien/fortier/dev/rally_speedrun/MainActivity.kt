@@ -339,6 +339,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private fun estDansCercle(location: Location) {
         val resultats: FloatArray = floatArrayOf(0.00f)
 
+        points.forEachIndexed { index, point ->
+            // IZI
+        }
+
         for(point in points) {
             Location.distanceBetween(location.latitude, location.longitude, point.position.latitude, point.position.longitude, resultats)
 
@@ -351,6 +355,13 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
         }
     }
 
+    /**
+     * Permet de calculer la distance entre la position de l'utilisateur et sa dernière position sauvegardé
+     * afin de calculer la distance totale parcourue
+     *
+     * @param location La location de l'utilisateur
+     *
+     */
     private fun calculerDistance(location: Location?) {
         val resultats: FloatArray = floatArrayOf(0.00f)
 

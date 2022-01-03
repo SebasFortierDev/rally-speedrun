@@ -71,6 +71,7 @@ class AjoutParcoursActivity : AppCompatActivity(), OnMapReadyCallback {
     private var pointsMarker = arrayListOf<Marker>()
     private var requestingLocationUpdates = false
     private var mapEstChargee = false
+    private var aChargePosition = false
     private var markerPosition: Marker? = null
 
     /**
@@ -330,7 +331,11 @@ class AjoutParcoursActivity : AppCompatActivity(), OnMapReadyCallback {
 
             markerPosition?.setIcon(bitmap?.let { BitmapDescriptorFactory.fromBitmap(it) })
             markerPosition?.alpha  = 10F
-            googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 15f))
+
+            if (!aChargePosition) {
+                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 15f))
+                aChargePosition = true
+            }
         }
     }
 }
