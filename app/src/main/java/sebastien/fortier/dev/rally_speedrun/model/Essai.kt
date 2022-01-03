@@ -11,5 +11,7 @@ import java.util.*
 data class Essai (
     var id: UUID = UUID.randomUUID(),
     var points: List<Point> = emptyList(),
-    var dureeTotal: String = ""
+    var dureeTotal: String = "",
+    var date: String = Calendar.getInstance().time.toString(),
+    var distance: Float = 0f
 )

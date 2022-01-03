@@ -7,6 +7,7 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.icu.text.Transliterator
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
@@ -60,7 +61,6 @@ private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES
  * @author Sébastien Fortier
  */
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListener {
-    private val rallySpeedrunViewModel: RallySpeedrunViewModel by viewModels()
     private val rallySpeedrunRepository = RallySpeedrunRepository.get()
 
     private lateinit var txtPas: TextView
@@ -83,6 +83,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
     private var markerPosition: Marker? = null
 
+    private var distance = 0f
+    private var derniereLocation : Location? = null
     private var compteurPas = 0f
     private var compteurPasBase = -1f
     private lateinit var sensorManager: SensorManager
@@ -282,6 +284,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private fun update(location: Location) {
         showLocation(location)
         estDansCercle(location)
+        calculerDistance(location)
         detecterFin()
     }
 
@@ -348,6 +351,20 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
         }
     }
 
+    private fun calculerDistance(location: Location?) {
+        val resultats: FloatArray = floatArrayOf(0.00f)
+
+        if (derniereLocation == null) {
+            derniereLocation = location
+        }
+        else {
+            if (location != null) {
+                Location.distanceBetween(location.latitude, location.longitude, derniereLocation!!.latitude, derniereLocation!!.longitude, resultats)
+                distance += resultats[0]
+                derniereLocation = location
+            }
+        }
+    }
     /**
      * Création de la boite de dialogue pour afficher les résultats du rally
      *
@@ -363,7 +380,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
                 getString(R.string.fin_dialogue_positif)
             ) { _, _ ->
                 essai.dureeTotal = chrono.text.toString()
-
+                essai.distance = (Math.round((distance / 1000) * 100.0) / 100.0).toFloat()
                 parcours.essais.add(essai)
 
                 val pointsEssai = ArrayList<Point>()
