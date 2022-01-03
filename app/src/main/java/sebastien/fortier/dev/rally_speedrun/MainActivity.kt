@@ -7,11 +7,14 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
+import android.icu.text.Transliterator
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
+import android.util.Log
 import android.widget.Chronometer
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -25,9 +28,12 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
+import sebastien.fortier.dev.rally_speedrun.model.Essai
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.lang.reflect.Type
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -55,6 +61,8 @@ private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES
  * @author Sébastien Fortier
  */
 class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListener {
+    private val rallySpeedrunRepository = RallySpeedrunRepository.get()
+
     private lateinit var txtPas: TextView
     private lateinit var chrono: Chronometer
 
@@ -63,6 +71,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private var mapEstChargee = false
 
     private var parcours: Parcours = Parcours(nom = "", points = emptyList())
+
+    private var essai: Essai = Essai()
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private lateinit var locationRequest: LocationRequest
@@ -73,6 +83,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
     private var markerPosition: Marker? = null
 
+    private var distance = 0f
+    private var derniereLocation : Location? = null
     private var compteurPas = 0f
     private var compteurPasBase = -1f
     private lateinit var sensorManager: SensorManager
@@ -87,7 +99,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-
+        actionBar?.hide()
         // Charge l'affichage du nb de pas et du chronometre
         txtPas = findViewById(R.id.nb_pas)
         chrono = findViewById(R.id.chronometer)
@@ -124,6 +136,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
         if (parcoursMap != null) {
             parcours = parcoursMap
+            Log.d("parcoursMapRecu" , parcoursMap.toString())
+            Log.d("parcoursMapAssocié" , parcours.toString())
         }
 
         // Charge les points voulus dans la liste
@@ -270,6 +284,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private fun update(location: Location) {
         showLocation(location)
         estDansCercle(location)
+        calculerDistance(location)
         detecterFin()
     }
 
@@ -324,6 +339,10 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private fun estDansCercle(location: Location) {
         val resultats: FloatArray = floatArrayOf(0.00f)
 
+        points.forEachIndexed { index, point ->
+            // IZI
+        }
+
         for(point in points) {
             Location.distanceBetween(location.latitude, location.longitude, point.position.latitude, point.position.longitude, resultats)
 
@@ -331,10 +350,32 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
                 val bitmap = AppCompatResources.getDrawable(this, R.drawable.ic_baseline_check_circle_outline_24)?.toBitmap()
                 point.marker?.setIcon(bitmap?.let { BitmapDescriptorFactory.fromBitmap(it) })
                 point.estVisite = true
+                point.tempsVisite = chrono.text.toString()
             }
         }
     }
 
+    /**
+     * Permet de calculer la distance entre la position de l'utilisateur et sa dernière position sauvegardé
+     * afin de calculer la distance totale parcourue
+     *
+     * @param location La location de l'utilisateur
+     *
+     */
+    private fun calculerDistance(location: Location?) {
+        val resultats: FloatArray = floatArrayOf(0.00f)
+
+        if (derniereLocation == null) {
+            derniereLocation = location
+        }
+        else {
+            if (location != null) {
+                Location.distanceBetween(location.latitude, location.longitude, derniereLocation!!.latitude, derniereLocation!!.longitude, resultats)
+                distance += resultats[0]
+                derniereLocation = location
+            }
+        }
+    }
     /**
      * Création de la boite de dialogue pour afficher les résultats du rally
      *
@@ -349,10 +390,23 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
             .setPositiveButton(
                 getString(R.string.fin_dialogue_positif)
             ) { _, _ ->
+                essai.dureeTotal = chrono.text.toString()
+                essai.distance = (Math.round((distance / 1000) * 100.0) / 100.0).toFloat()
+                parcours.essais.add(essai)
+
+                val pointsEssai = ArrayList<Point>()
+                for (point in points) {
+                    pointsEssai.add(Point(point.position, point.nom, point.couleurHue, point.couleurHexa, point.estVisite, point.tempsVisite))
+                }
+
+                essai.points = pointsEssai
+                rallySpeedrunRepository.updateEssai(parcours.id, parcours.essais)
+
                 this.finish()
             }
             .create()
     }
+
 
     /**
      * Permet de transformer un parcours qui est en JSON en objet

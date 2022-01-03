@@ -5,6 +5,7 @@ import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
+import sebastien.fortier.dev.rally_speedrun.model.Essai
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import java.util.*
 
@@ -42,6 +43,9 @@ interface RallySpeedrunDao {
      */
     @Update
     fun updateParcours(parcours: Parcours)
+
+    @Query("UPDATE parcours SET essais=(:essais) WHERE id=(:id)")
+    fun updateEssais(id: UUID, essais: List<Essai>)
 
     /**
      * Permet d'ajouter un parcours dans la base de données

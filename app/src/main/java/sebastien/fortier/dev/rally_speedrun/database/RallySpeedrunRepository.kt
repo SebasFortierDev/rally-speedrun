@@ -3,6 +3,7 @@ package sebastien.fortier.dev.rally_speedrun.database
 import android.content.Context
 import androidx.room.Room
 import kotlinx.coroutines.flow.Flow
+import sebastien.fortier.dev.rally_speedrun.model.Essai
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import java.util.*
 import java.util.concurrent.Executors
@@ -64,6 +65,15 @@ class RallySpeedrunRepository private constructor(context: Context) {
     fun updateParcours(parcours: Parcours) {
         executor.execute {
             parcoursDao.updateParcours(parcours)
+        }
+    }
+
+    /**
+     * Permet de faire le lien avec le DAO et la base de données pour la méthode updateParcours
+     */
+    fun updateEssai(id: UUID, essais: List<Essai>) {
+        executor.execute {
+            parcoursDao.updateEssais(id, essais)
         }
     }
 
