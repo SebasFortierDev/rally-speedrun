@@ -2,7 +2,7 @@
     <string name="app_name">Rally Speedrun</string>
     <string name="commencer">COMMENCER</string>
     <string name="fin_dialogue_titre">BRAVO!!!!</string>
-    <string name="fin_dialogue_positif">Recommencer</string>
+    <string name="fin_dialogue_positif">Ajouter l\'essai</string>
     <string name="titre_dialog_permission">Permissions demandées</string>
     <string name="body_dialog_permission">Comme il s\'agit d\'une application gérant votre activité physique en s\'assurant que vous visitez physiquement des emplacements, il est nécessaire de pouvoir savoir ou vous êtes. Vos données sont en sécurité et ne seront pas vendus.</string>
     <string name="positif_dialog_base">OK</string>
