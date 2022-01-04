@@ -144,6 +144,7 @@ class ParcoursListActivity : AppCompatActivity() {
         View.OnClickListener {
         private lateinit var parcours: Parcours
         val nomParcours: TextView = itemView.findViewById(R.id.parcours_nom)
+        val textMeilleurTemps: TextView = itemView.findViewById(R.id.parcours_meilleur_temps)
 
         init {
             itemView.setOnClickListener(this)
@@ -155,6 +156,9 @@ class ParcoursListActivity : AppCompatActivity() {
         fun bind(parcours: Parcours) {
             this.parcours = parcours
             nomParcours.text = parcours.nom
+            textMeilleurTemps.text = getString(
+                R.string.meilleur_temps_parcours,
+                parcours.obtenirMeilleurTemps().replace('.', ':'))
         }
 
         /**

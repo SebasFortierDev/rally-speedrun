@@ -1,5 +1,6 @@
 package sebastien.fortier.dev.rally_speedrun.model
 
+import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
@@ -21,7 +22,18 @@ data class Parcours (
     var points: List<Point> = emptyList(),
     var essais: MutableList<Essai> = mutableListOf(),
 ) {
-    fun ajouterEssai(essai : Essai) {
-        essais.add(essai)
+    fun obtenirMeilleurTemps() : String {
+        var meilleurTemps = 0.0
+
+        for (essai in essais) {
+            essai.dureeTotal.replace(':', '.')
+            val dureeTotalDouble = essai.dureeTotal.replace(':', '.').toDouble()
+
+            if (dureeTotalDouble > meilleurTemps) {
+               meilleurTemps = dureeTotalDouble
+            }
+        }
+        return meilleurTemps.toString()
     }
+
 }
