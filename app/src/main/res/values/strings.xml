@@ -26,4 +26,7 @@
     <string name="erreur_liste_points_vide">Le parcours doit contenir au moins un point</string>
     <string name="mes_parcours_titre">Mes parcours</string>
     <string name="meilleur_temps_parcours">Meilleur temps: %1$s minutes</string>
+    <string name="label_nom_parcours">Nom du parcours</string>
+    <string name="label_meilleur_temps">Meilleur temps</string>
+    <string name="label_nombre_essais_parcours">Nombre d\'essais pour ce parcours</string>
 </resources>

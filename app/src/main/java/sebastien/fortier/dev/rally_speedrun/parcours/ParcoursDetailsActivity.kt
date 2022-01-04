@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Debug
 import android.util.Log
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.core.content.FileProvider
 import com.google.gson.Gson
@@ -18,6 +19,11 @@ class ParcoursDetailsActivity : AppCompatActivity() {
 
     private var parcours: Parcours = Parcours(nom = "")
 
+    private lateinit var txtNomParcours : TextView
+    private lateinit var txtMeilleurTemps : TextView
+    private lateinit var txtNombreEssais : TextView
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_parcours_details)
@@ -28,11 +34,17 @@ class ParcoursDetailsActivity : AppCompatActivity() {
         if (parcoursDetails != null) {
             parcours = parcoursDetails
         }
+
+        txtNomParcours = findViewById(R.id.nom_parcours)
+        txtMeilleurTemps = findViewById(R.id.meilleur_temps)
+        txtNombreEssais = findViewById(R.id.nombre_essais)
     }
 
     override fun onStart() {
         super.onStart()
-
+        txtNomParcours.text = parcours.nom
+        txtMeilleurTemps.text = parcours.obtenirMeilleurTemps()
+        txtNombreEssais.text = parcours.obtenirNombresEssais()
     }
 
     /**

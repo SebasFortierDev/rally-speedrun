@@ -36,4 +36,8 @@ data class Parcours (
         return meilleurTemps.toString()
     }
 
+    fun obtenirNombresEssais() : String {
+        return essais.size.toString()
+    }
+
 }
