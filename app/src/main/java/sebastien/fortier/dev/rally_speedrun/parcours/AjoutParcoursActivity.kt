@@ -24,7 +24,7 @@ import sebastien.fortier.dev.rally_speedrun.R
 import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.util.concurrent.TimeUnit
 import android.widget.Button
-import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
+import sebastien.fortier.dev.rally_speedrun.RallySpeedrunRepository
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import com.google.android.material.snackbar.Snackbar
 

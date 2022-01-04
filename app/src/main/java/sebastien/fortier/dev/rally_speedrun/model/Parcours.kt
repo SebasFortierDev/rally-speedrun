@@ -33,11 +33,11 @@ data class Parcours (
                meilleurTemps = dureeTotalDouble
             }
         }
-        return meilleurTemps.toString()
+        return meilleurTemps.toString().replace('.', ':')
     }
 
-    fun obtenirNombresEssais() : String {
-        return essais.size.toString()
+    fun obtenirNombresEssais() : Int {
+        return essais.size
     }
 
 }

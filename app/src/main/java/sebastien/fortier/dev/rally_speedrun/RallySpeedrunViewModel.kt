@@ -2,7 +2,7 @@ package sebastien.fortier.dev.rally_speedrun
 
 import android.app.Application
 import androidx.lifecycle.*
-import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
+import sebastien.fortier.dev.rally_speedrun.RallySpeedrunRepository
 
 
 /**
