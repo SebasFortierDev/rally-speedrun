@@ -333,7 +333,14 @@ class AjoutParcoursActivity : AppCompatActivity(), OnMapReadyCallback {
             markerPosition?.alpha  = 10F
 
             if (!aChargePosition) {
-                googleMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(location.latitude, location.longitude), 15f))
+                googleMap.animateCamera(
+                    CameraUpdateFactory.newLatLngZoom(
+                        LatLng(
+                            location.latitude,
+                            location.longitude
+                        ), 15.0f
+                    )
+                )
                 aChargePosition = true
             }
         }
