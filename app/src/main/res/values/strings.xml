@@ -28,7 +28,7 @@
     <string name="meilleur_temps_parcours">Meilleur temps: %1$s</string>
     <string name="label_nom_parcours">Nom du parcours</string>
     <string name="label_meilleur_temps">Meilleur temps</string>
-    <string name="label_nombre_essais_parcours">Nombre d\'essais</string>
+    <string name="label_nombre_essais_parcours">Nombre total d\'essais</string>
     <string name="label_points">Points</string>
     <string name="points_details_position">%1$s \nLatitude %2$s \nLongitude %3$s\n</string>
     <string name="label_liste_essais">Essais</string>

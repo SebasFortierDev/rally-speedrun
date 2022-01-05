@@ -60,7 +60,8 @@ class ParcoursDetailsActivity : AppCompatActivity() {
         essaisRecyclerView = findViewById(R.id.essais_recycler_view)
         essaisRecyclerView.layoutManager = LinearLayoutManager(this)
 
-        adapter = EssaiAdapter(parcours.essais)
+        val listeOrdreTemps = parcours.essais.reversed()
+        adapter = EssaiAdapter(listeOrdreTemps)
         essaisRecyclerView.adapter = adapter
 
 
@@ -120,6 +121,9 @@ class ParcoursDetailsActivity : AppCompatActivity() {
             dateEssai.text = essai.date
             tempsEssai.text = essai.dureeTotal
             distance.text = getString(R.string.distance, essai.distance.toString())
+            if (essai == parcours.obtenirMeilleurEssai())
+                tempsEssai.setTextColor(ContextCompat.getColor(applicationContext, R.color.vert))
+
         }
 
         /**

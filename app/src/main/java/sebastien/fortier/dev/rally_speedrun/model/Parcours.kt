@@ -23,14 +23,14 @@ data class Parcours (
     var essais: MutableList<Essai> = mutableListOf(),
 ) {
     fun obtenirMeilleurEssai() : Essai {
-        var meilleurTemps = 0.0
+        var meilleurTemps = 3000000.0 // Chiffre trop grand
         var meilleurEssai = Essai()
 
         for (essai in essais) {
             essai.dureeTotal.replace(':', '.')
             val dureeTotalDouble = essai.dureeTotal.replace(':', '.').toDouble()
 
-            if (dureeTotalDouble > meilleurTemps) {
+            if (dureeTotalDouble < meilleurTemps) {
                 meilleurTemps = dureeTotalDouble
                 meilleurEssai = essai
             }
