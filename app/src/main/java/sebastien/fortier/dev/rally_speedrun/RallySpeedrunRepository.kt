@@ -1,8 +1,9 @@
-package sebastien.fortier.dev.rally_speedrun.database
+package sebastien.fortier.dev.rally_speedrun
 
 import android.content.Context
 import androidx.room.Room
 import kotlinx.coroutines.flow.Flow
+import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunDatabase
 import sebastien.fortier.dev.rally_speedrun.model.Essai
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import java.util.*

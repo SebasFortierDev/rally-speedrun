@@ -28,7 +28,6 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
 import sebastien.fortier.dev.rally_speedrun.model.Essai
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import sebastien.fortier.dev.rally_speedrun.model.Point
@@ -38,19 +37,6 @@ import java.util.concurrent.TimeUnit
 import com.google.android.gms.maps.model.LatLng
 
 import com.google.android.gms.maps.model.PolylineOptions
-
-import com.google.android.gms.maps.model.Polyline
-import androidx.lifecycle.Transformations.map
-
-import com.google.android.gms.maps.CameraUpdate
-
-import com.google.android.gms.maps.model.CameraPosition
-
-
-
-
-
-
 
 
 private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"

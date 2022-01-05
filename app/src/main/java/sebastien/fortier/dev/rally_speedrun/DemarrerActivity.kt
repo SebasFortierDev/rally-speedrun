@@ -84,7 +84,7 @@ class DemarrerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
         btnParcours = findViewById(R.id.btnParcours)
 
         // Observateur du livedata de la liste de parcours dans la BD
-        rallySpeedrunViewModel.parcoursLiveData.observe(
+        rallySpeedrunViewModel.listeParcoursLiveData.observe(
             this,
             { listeParcours ->
                 listeParcours?.let {

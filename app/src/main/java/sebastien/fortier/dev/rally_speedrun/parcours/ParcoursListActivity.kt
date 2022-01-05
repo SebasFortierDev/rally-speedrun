@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -15,9 +16,13 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
+import sebastien.fortier.dev.rally_speedrun.MainActivity
 import sebastien.fortier.dev.rally_speedrun.R
 import sebastien.fortier.dev.rally_speedrun.RallySpeedrunViewModel
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
+import java.lang.reflect.Type
 
 /**
  * Classe ParcoursListActivity
@@ -64,7 +69,7 @@ class ParcoursListActivity : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTitle(R.string.mes_parcours_titre)
+        title = getString(R.string.mes_parcours_titre)
         setContentView(R.layout.activity_parcours_list)
 
         btnAjouterParcours = findViewById(R.id.btn_ajout_parcours)
@@ -112,7 +117,7 @@ class ParcoursListActivity : AppCompatActivity() {
             }
         }
 
-        rallySpeedrunViewModel.parcoursLiveData.observe(
+        rallySpeedrunViewModel.listeParcoursLiveData.observe(
             this,
             { listeParcours ->
                 listeParcours?.let {
@@ -156,9 +161,15 @@ class ParcoursListActivity : AppCompatActivity() {
         fun bind(parcours: Parcours) {
             this.parcours = parcours
             nomParcours.text = parcours.nom
-            textMeilleurTemps.text = getString(
-                R.string.meilleur_temps_parcours,
-                parcours.obtenirMeilleurTemps().replace('.', ':'))
+
+            val meilleurTemps = parcours.obtenirMeilleurEssai().dureeTotal
+
+            if (meilleurTemps != "") {
+                textMeilleurTemps.text = getString(
+                    R.string.meilleur_temps_parcours,
+                    parcours.obtenirMeilleurEssai().dureeTotal.replace('.', ':'))
+            }
+
         }
 
         /**
@@ -167,7 +178,14 @@ class ParcoursListActivity : AppCompatActivity() {
          * @param v La vue cliquée.
          */
         override fun onClick(v: View?) {
-            // preuveDetailViewModel.selectIdPreuve(preuve.id)
+            val intent = Intent(applicationContext, ParcoursDetailsActivity::class.java)
+            val nomParcours = parcours.nom
+            val pointsParcours = parcours.points
+            parcours = Parcours(id = parcours.id, nom = nomParcours, points = pointsParcours, essais = parcours.essais)
+            val parcoursString = fromParcours(parcours)
+            intent.putExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY", parcoursString )
+
+            startActivity(intent)
         }
     }
 
@@ -243,5 +261,18 @@ class ParcoursListActivity : AppCompatActivity() {
             .setMessage(getString(R.string.body_dialog_refuse))
             .setPositiveButton(getString(R.string.positif_dialog_base)) {_, _ -> }
             .create()
+    }
+
+    /**
+     * Permet de transformer le parcours actuel en JSON afin de l'envoyer à une activity
+     *
+     * @param parcours Le parcours qu'on veut transformer en JSON
+     *
+     * @return Le parcours en JSON
+     */
+    private fun fromParcours(parcours: Parcours?): String {
+        val gson = Gson()
+        val type: Type = object : TypeToken<Parcours?>() {}.type
+        return gson.toJson(parcours, type)
     }
 }

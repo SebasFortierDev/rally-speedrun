@@ -24,7 +24,7 @@ import sebastien.fortier.dev.rally_speedrun.R
 import sebastien.fortier.dev.rally_speedrun.model.Point
 import java.util.concurrent.TimeUnit
 import android.widget.Button
-import sebastien.fortier.dev.rally_speedrun.database.RallySpeedrunRepository
+import sebastien.fortier.dev.rally_speedrun.RallySpeedrunRepository
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import com.google.android.material.snackbar.Snackbar
 
@@ -82,7 +82,7 @@ class AjoutParcoursActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ajout_parcours)
-
+        title = getString(R.string.ajout_parcours)
         btnConfirmerChoix = findViewById(R.id.btn_confirmer_choix)
         btnAnnulerChoix = findViewById(R.id.btn_annuler_choix)
 

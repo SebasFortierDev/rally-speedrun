@@ -22,13 +22,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Rallyspeedrun">
         <activity
+            android:name=".parcours.ParcoursDetailsActivity"
+            android:exported="false"
+            android:parentActivityName=".parcours.ParcoursListActivity"/>
+        <activity
             android:name=".parcours.AjoutParcoursActivity"
-            android:parentActivityName=".parcours.ParcoursListActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".parcours.ParcoursListActivity" />
         <activity
             android:name=".parcours.ParcoursListActivity"
-            android:parentActivityName=".DemarrerActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:parentActivityName=".DemarrerActivity" />
         <activity
             android:name=".DemarrerActivity"
             android:exported="true"
@@ -41,9 +45,9 @@
         </activity>
         <activity
             android:name=".MainActivity"
-            android:theme="@style/Theme.AppCompat.NoActionBar"
             android:exported="false"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.NoActionBar" />
 
         <meta-data
             android:name="com.google.android.geo.API_KEY"

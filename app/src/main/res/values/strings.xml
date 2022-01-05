@@ -25,5 +25,14 @@
     <string name="label_choix_parcours">Choix du parcours</string>
     <string name="erreur_liste_points_vide">Le parcours doit contenir au moins un point</string>
     <string name="mes_parcours_titre">Mes parcours</string>
-    <string name="meilleur_temps_parcours">Meilleur temps: %1$s minutes</string>
+    <string name="meilleur_temps_parcours">Meilleur temps: %1$s</string>
+    <string name="label_nom_parcours">Nom du parcours</string>
+    <string name="label_meilleur_temps">Meilleur temps</string>
+    <string name="label_nombre_essais_parcours">Nombre total d\'essais</string>
+    <string name="label_points">Points</string>
+    <string name="points_details_position">%1$s \nLatitude %2$s \nLongitude %3$s\n</string>
+    <string name="label_liste_essais">Essais</string>
+    <string name="meilleur_temps_vide">Aucun temps n\'existe pour ce parcours</string>
+    <string name="aucun_essai_existant">Aucun essai existe pour ce parcours</string>
+    <string name="distance">%1$s km</string>
 </resources>

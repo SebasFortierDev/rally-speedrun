@@ -10,30 +10,32 @@
     android:layout_marginTop="10dp"
     android:layout_marginLeft="10dp"
     android:layout_marginRight="10dp"
-    android:layout_marginBottom="10dp">
+    android:layout_marginBottom="10dp"
+    android:padding="15dp">
 
     <TextView
         android:id="@+id/parcours_nom"
         android:layout_width="0dp"
-        android:layout_marginTop="10dp"
+
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@id/parcours_meilleur_temps"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:padding="35dp"
+
         tools:text="Nom du parcours"
         android:textStyle="bold"
         android:textSize="15sp"/>
+
     <TextView
         android:id="@+id/parcours_meilleur_temps"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/parcours_nom"
-        android:padding="35dp"
+
         tools:text="Meilleur temps"
         android:textStyle="bold"
-        android:textSize="10sp"/>
+        android:textSize="15sp"/>
 
 
 
