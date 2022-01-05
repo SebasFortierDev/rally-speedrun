@@ -82,7 +82,7 @@ class AjoutParcoursActivity : AppCompatActivity(), OnMapReadyCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ajout_parcours)
-
+        title = getString(R.string.ajout_parcours)
         btnConfirmerChoix = findViewById(R.id.btn_confirmer_choix)
         btnAnnulerChoix = findViewById(R.id.btn_annuler_choix)
 

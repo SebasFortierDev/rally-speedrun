@@ -22,18 +22,20 @@ data class Parcours (
     var points: List<Point> = emptyList(),
     var essais: MutableList<Essai> = mutableListOf(),
 ) {
-    fun obtenirMeilleurTemps() : String {
+    fun obtenirMeilleurEssai() : Essai {
         var meilleurTemps = 0.0
+        var meilleurEssai = Essai()
 
         for (essai in essais) {
             essai.dureeTotal.replace(':', '.')
             val dureeTotalDouble = essai.dureeTotal.replace(':', '.').toDouble()
 
             if (dureeTotalDouble > meilleurTemps) {
-               meilleurTemps = dureeTotalDouble
+                meilleurTemps = dureeTotalDouble
+                meilleurEssai = essai
             }
         }
-        return meilleurTemps.toString().replace('.', ':')
+        return meilleurEssai
     }
 
     fun obtenirNombresEssais() : Int {

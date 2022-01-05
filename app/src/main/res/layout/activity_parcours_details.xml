@@ -123,5 +123,14 @@
         app:layout_constraintBottom_toBottomOf="parent">
     </androidx.recyclerview.widget.RecyclerView>
 
+    <TextView
+        android:id="@+id/txt_essai_vide"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_liste_essais"
+        android:text="@string/aucun_essai_existant" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

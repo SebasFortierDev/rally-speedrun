@@ -24,6 +24,7 @@ class ParcoursDetailsActivity : AppCompatActivity() {
     private lateinit var txtNomParcours : TextView
     private lateinit var txtMeilleurTemps : TextView
     private lateinit var txtNombreEssais : TextView
+    private lateinit var txtEssaisVide : TextView
     private lateinit var pointsLayout : LinearLayoutCompat
 
     private lateinit var essaisRecyclerView: RecyclerView
@@ -40,6 +41,7 @@ class ParcoursDetailsActivity : AppCompatActivity() {
         if (parcoursDetails != null) {
             parcours = parcoursDetails
         }
+        title = parcours.nom
 
         pointsLayout = findViewById(R.id.layout_details_parcours)
 
@@ -58,19 +60,33 @@ class ParcoursDetailsActivity : AppCompatActivity() {
         adapter = EssaiAdapter(parcours.essais)
         essaisRecyclerView.adapter = adapter
 
+
+
         txtNomParcours = findViewById(R.id.nom_parcours)
+        txtEssaisVide = findViewById(R.id.txt_essai_vide)
         txtMeilleurTemps = findViewById(R.id.meilleur_temps)
         txtNombreEssais = findViewById(R.id.nombre_essais)
+
+
+        if (parcours.essais.isEmpty()) {
+            essaisRecyclerView.visibility = View.GONE;
+            txtEssaisVide.visibility = View.VISIBLE;
+
+        }
+        else {
+            essaisRecyclerView.visibility = View.VISIBLE;
+            txtEssaisVide.visibility = View.GONE;
+
+        }
     }
 
     override fun onStart() {
         super.onStart()
         txtNomParcours.text = parcours.nom
-        txtMeilleurTemps.text = parcours.obtenirMeilleurTemps()
+
+        val meilleurTemps = parcours.obtenirMeilleurEssai().dureeTotal
+        txtMeilleurTemps.text = if (meilleurTemps.isEmpty()) getString(R.string.meilleur_temps_vide) else meilleurTemps
         txtNombreEssais.text = parcours.obtenirNombresEssais().toString()
-
-
-
     }
 
     /**

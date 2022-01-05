@@ -69,7 +69,7 @@ class ParcoursListActivity : AppCompatActivity() {
      */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setTitle(R.string.mes_parcours_titre)
+        title = getString(R.string.mes_parcours_titre)
         setContentView(R.layout.activity_parcours_list)
 
         btnAjouterParcours = findViewById(R.id.btn_ajout_parcours)
@@ -161,9 +161,15 @@ class ParcoursListActivity : AppCompatActivity() {
         fun bind(parcours: Parcours) {
             this.parcours = parcours
             nomParcours.text = parcours.nom
-            textMeilleurTemps.text = getString(
-                R.string.meilleur_temps_parcours,
-                parcours.obtenirMeilleurTemps().replace('.', ':'))
+
+            val meilleurTemps = parcours.obtenirMeilleurEssai().dureeTotal
+
+            if (meilleurTemps != "") {
+                textMeilleurTemps.text = getString(
+                    R.string.meilleur_temps_parcours,
+                    parcours.obtenirMeilleurEssai().dureeTotal.replace('.', ':'))
+            }
+
         }
 
         /**
