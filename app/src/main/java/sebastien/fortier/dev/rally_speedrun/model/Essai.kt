@@ -1,5 +1,7 @@
 package sebastien.fortier.dev.rally_speedrun.model
 
+import java.time.LocalDate
+import java.time.LocalTime
 import java.util.*
 
 /**
@@ -12,6 +14,6 @@ data class Essai (
     var id: UUID = UUID.randomUUID(),
     var points: List<Point> = emptyList(),
     var dureeTotal: String = "",
-    var date: String = Calendar.getInstance().time.toString(),
+    var date: String = LocalDate.now().toString() + " | " + LocalTime.now().hour + ":" + LocalTime.now().minute.toString() + ":" + LocalTime.now().second.toString(),
     var distance: Float = 0f
 )

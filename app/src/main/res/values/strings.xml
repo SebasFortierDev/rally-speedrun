@@ -34,4 +34,5 @@
     <string name="label_liste_essais">Essais</string>
     <string name="meilleur_temps_vide">Aucun temps n\'existe pour ce parcours</string>
     <string name="aucun_essai_existant">Aucun essai existe pour ce parcours</string>
+    <string name="distance">%1$s km</string>
 </resources>

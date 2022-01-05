@@ -8,6 +8,7 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -16,6 +17,7 @@ import sebastien.fortier.dev.rally_speedrun.R
 import sebastien.fortier.dev.rally_speedrun.model.Essai
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import java.lang.reflect.Type
+import java.time.LocalDate
 
 class ParcoursDetailsActivity : AppCompatActivity() {
 
@@ -51,6 +53,7 @@ class ParcoursDetailsActivity : AppCompatActivity() {
             pointTextView.text = getString(
                 R.string.points_details_position,
                 point.nom, point.position.latitude.toString(), point.position.longitude.toString())
+            pointTextView.setTextColor(ContextCompat.getColor(this, R.color.black))
             pointsLayout.addView(pointTextView)
         }
 
@@ -68,6 +71,17 @@ class ParcoursDetailsActivity : AppCompatActivity() {
         txtNombreEssais = findViewById(R.id.nombre_essais)
 
 
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        txtNomParcours.text = parcours.nom
+
+        val meilleurTemps = parcours.obtenirMeilleurEssai().dureeTotal
+        txtMeilleurTemps.text = if (meilleurTemps.isEmpty()) getString(R.string.meilleur_temps_vide) else meilleurTemps
+        txtNombreEssais.text = parcours.obtenirNombresEssais().toString()
+
         if (parcours.essais.isEmpty()) {
             essaisRecyclerView.visibility = View.GONE;
             txtEssaisVide.visibility = View.VISIBLE;
@@ -78,15 +92,6 @@ class ParcoursDetailsActivity : AppCompatActivity() {
             txtEssaisVide.visibility = View.GONE;
 
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-        txtNomParcours.text = parcours.nom
-
-        val meilleurTemps = parcours.obtenirMeilleurEssai().dureeTotal
-        txtMeilleurTemps.text = if (meilleurTemps.isEmpty()) getString(R.string.meilleur_temps_vide) else meilleurTemps
-        txtNombreEssais.text = parcours.obtenirNombresEssais().toString()
     }
 
     /**
@@ -100,6 +105,8 @@ class ParcoursDetailsActivity : AppCompatActivity() {
         View.OnClickListener {
         private lateinit var essai: Essai
         val dateEssai: TextView = itemView.findViewById(R.id.date_essai)
+        val tempsEssai: TextView = itemView.findViewById(R.id.temps_total)
+        val distance: TextView = itemView.findViewById(R.id.distance)
 
         init {
             itemView.setOnClickListener(this)
@@ -111,6 +118,8 @@ class ParcoursDetailsActivity : AppCompatActivity() {
         fun bind(essai: Essai) {
             this.essai = essai
             dateEssai.text = essai.date
+            tempsEssai.text = essai.dureeTotal
+            distance.text = getString(R.string.distance, essai.distance.toString())
         }
 
         /**
