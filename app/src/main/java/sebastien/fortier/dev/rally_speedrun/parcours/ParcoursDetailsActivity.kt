@@ -2,6 +2,7 @@ package sebastien.fortier.dev.rally_speedrun.parcours
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
@@ -132,7 +133,16 @@ class ParcoursDetailsActivity : AppCompatActivity() {
          * @param v La vue cliquée.
          */
         override fun onClick(v: View?) {
-
+            val intent = Intent(applicationContext, EssaiDetailsActivity::class.java)
+            val nomParcours = parcours.nom
+            val pointsParcours = parcours.points
+            parcours = Parcours(id = parcours.id, nom = nomParcours, points = pointsParcours, essais = parcours.essais)
+            val essaiString = fromEssai(essai)
+            val parcoursString = fromParcours(parcours)
+            intent.putExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY", essaiString )
+            intent.putExtra("EXTRA_PARCOURS_EXTRA_KEY", parcoursString )
+            Log.d("essaiString", essaiString)
+            startActivity(intent)
         }
     }
 
@@ -189,5 +199,32 @@ class ParcoursDetailsActivity : AppCompatActivity() {
         val gson = Gson()
         val type: Type = object : TypeToken<Parcours?>() {}.type
         return gson.fromJson(parcoursString, type)
+    }
+
+
+    /**
+     * Permet de transformer le parcours actuel en JSON afin de l'envoyer à une activity
+     *
+     * @param parcours Le parcours qu'on veut transformer en JSON
+     *
+     * @return Le parcours en JSON
+     */
+    private fun fromParcours(parcours: Parcours?): String {
+        val gson = Gson()
+        val type: Type = object : TypeToken<Parcours?>() {}.type
+        return gson.toJson(parcours, type)
+    }
+
+    /**
+     * Permet de transformer un essai en JSON afin de l'envoyer à une activity
+     *
+     * @param essai Le parcours qu'on veut transformer en JSON
+     *
+     * @return L'essai en JSON
+     */
+    private fun fromEssai(essai: Essai?): String {
+        val gson = Gson()
+        val type: Type = object : TypeToken<Essai?>() {}.type
+        return gson.toJson(essai, type)
     }
 }
