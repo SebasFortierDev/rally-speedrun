@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
@@ -18,12 +17,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import sebastien.fortier.dev.rally_speedrun.MainActivity
 import sebastien.fortier.dev.rally_speedrun.R
 import sebastien.fortier.dev.rally_speedrun.RallySpeedrunViewModel
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import java.lang.reflect.Type
 
+private const val EXTRA_PARCOURS_DETAILS_ACTIVITY = "sebastien.fortier.dev.rally_speedrun.PARCOURS_DETAILS_ACTIVITY"
 /**
  * Classe ParcoursListActivity
  *
@@ -169,7 +168,6 @@ class ParcoursListActivity : AppCompatActivity() {
                     R.string.meilleur_temps_parcours,
                     parcours.obtenirMeilleurEssai().dureeTotal.replace('.', ':'))
             }
-
         }
 
         /**
@@ -183,7 +181,7 @@ class ParcoursListActivity : AppCompatActivity() {
             val pointsParcours = parcours.points
             parcours = Parcours(id = parcours.id, nom = nomParcours, points = pointsParcours, essais = parcours.essais)
             val parcoursString = fromParcours(parcours)
-            intent.putExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY", parcoursString )
+            intent.putExtra(EXTRA_PARCOURS_DETAILS_ACTIVITY, parcoursString )
 
             startActivity(intent)
         }

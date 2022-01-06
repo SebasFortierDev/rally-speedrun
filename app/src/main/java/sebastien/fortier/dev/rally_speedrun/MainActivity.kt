@@ -7,14 +7,11 @@ import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
 import android.hardware.SensorManager
-import android.icu.text.Transliterator
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
-import android.util.Log
 import android.widget.Chronometer
 import android.widget.TextView
-import androidx.activity.viewModels
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
@@ -37,10 +34,11 @@ import java.util.concurrent.TimeUnit
 import com.google.android.gms.maps.model.LatLng
 
 import com.google.android.gms.maps.model.PolylineOptions
+import kotlin.math.roundToLong
 
 
 private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"
-
+private const val EXTRA_PARCOURS_MAP_ACTIVITY = "sebastien.fortier.dev.rally_speedrun.PARCOURS_MAP_ACTIVITY"
 /**
  * Activity principal qui contient la carte de Google map
  *
@@ -138,13 +136,11 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
         }
 
         // Récupération du parcours envoyé
-        val parcoursString = intent.getStringExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY").toString()
+        val parcoursString = intent.getStringExtra(EXTRA_PARCOURS_MAP_ACTIVITY).toString()
         val parcoursMap = toParcours(parcoursString)
 
         if (parcoursMap != null) {
             parcours = parcoursMap
-            Log.d("parcoursMapRecu" , parcoursMap.toString())
-            Log.d("parcoursMapAssocié" , parcours.toString())
         }
 
         // Charge les points voulus dans la liste
@@ -423,7 +419,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
                 getString(R.string.fin_dialogue_positif)
             ) { _, _ ->
                 essai.dureeTotal = chrono.text.toString()
-                essai.distance = (Math.round((distance / 1000) * 100.0) / 100.0).toFloat()
+                essai.distance = (((distance / 1000) * 100.0).roundToLong() / 100.0).toFloat()
                 parcours.essais.add(essai)
 
                 val pointsEssai = ArrayList<Point>()

@@ -2,7 +2,6 @@ package sebastien.fortier.dev.rally_speedrun.parcours
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -15,11 +14,25 @@ import sebastien.fortier.dev.rally_speedrun.model.Essai
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import java.lang.reflect.Type
 import android.widget.LinearLayout
-import androidx.core.view.marginBottom
-import androidx.core.view.marginTop
-import kotlinx.coroutines.newFixedThreadPoolContext
+import kotlin.math.roundToLong
 
+private const val EXTRA_ESSAI_DETAILS_ACTIVITY = "sebastien.fortier.dev.rally_speedrun.ESSAI_DETAILS_ACTIVITY"
+private const val EXTRA_PARCOURS_ESSAI_DETAILS_ACTIVITY = "sebastien.fortier.dev.rally_speedrun.PARCOURS_ESSAI_DETAILS_ACTIVITY"
 
+/**
+ * Classe EssaiDetailsActivity
+ *
+ * @property essai L'essai qu'on voit les détails
+ * @property parcours Le parcours de l'essai qu'on voit les détails
+ *
+ * @property txtDateEssai TextView affichant la date
+ * @property txtDureeEssai TextView affichant la durée
+ * @property txtNoEssai TextView affichant le numéro
+ * @property txtDistance TextView affichant la distance parcourue
+ * @property pointsLayout Layout faisant afficher les points et leur temps
+ *
+ * @author Sébastien Fortier
+ */
 class EssaiDetailsActivity : AppCompatActivity() {
 
     private var essai: Essai = Essai()
@@ -32,14 +45,19 @@ class EssaiDetailsActivity : AppCompatActivity() {
 
     private lateinit var pointsLayout : LinearLayoutCompat
 
+    /**
+     * Initialisation de l'Activity.
+     *
+     * @param savedInstanceState Les données conservées au changement d'état.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_essai_details)
 
-        val essaiString = intent.getStringExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY").toString()
+        val essaiString = intent.getStringExtra(EXTRA_ESSAI_DETAILS_ACTIVITY).toString()
         val essaiDetails = toEssai(essaiString)
 
-        val parcoursString = intent.getStringExtra("EXTRA_PARCOURS_EXTRA_KEY").toString()
+        val parcoursString = intent.getStringExtra(EXTRA_PARCOURS_ESSAI_DETAILS_ACTIVITY).toString()
         val parcoursDetail = toParcours(parcoursString)
 
         if (essaiDetails != null) {
@@ -57,6 +75,7 @@ class EssaiDetailsActivity : AppCompatActivity() {
 
         pointsLayout = findViewById(R.id.layout_details_points)
 
+        // Affichage des points
         essai.points.forEachIndexed { index, point ->
 
             val tempsPoint = point.tempsVisite.replace(':', '.').toDouble()
@@ -67,8 +86,8 @@ class EssaiDetailsActivity : AppCompatActivity() {
             layout.layoutParams =
                 LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
             layout.orientation = LinearLayout.HORIZONTAL
-
             pointsLayout.addView(layout)
+
 
             val txtNomPoint = TextView(this)
             txtNomPoint.textSize = 14f
@@ -82,7 +101,6 @@ class EssaiDetailsActivity : AppCompatActivity() {
             val layoutParams = LinearLayout.LayoutParams(50, 50)
             layoutParams.setMargins(5, 0, 5, 0,)
             imageTempsPoint.layoutParams = layoutParams
-
             layout.addView(imageTempsPoint)
 
             val txtTempsEssai = TextView(this)
@@ -118,7 +136,6 @@ class EssaiDetailsActivity : AppCompatActivity() {
             txtMeilleurTemps.setTextColor(ContextCompat.getColor(this, couleurText))
             layout.addView(txtMeilleurTemps)
 
-
             val txtBarre2 = TextView(this)
             txtBarre2.textSize = 14f
             txtBarre2.text = " | "
@@ -128,7 +145,7 @@ class EssaiDetailsActivity : AppCompatActivity() {
             val txtDifferenceTemps = TextView(this)
             txtDifferenceTemps.textSize = 14f
             var signe = ""
-            if (differenceTemps >= 0) {
+            if (differenceTemps > 0) {
                 couleurText = R.color.rouge_700
                 signe = "+"
             }
@@ -136,17 +153,17 @@ class EssaiDetailsActivity : AppCompatActivity() {
                 couleurText = R.color.vert
                 signe = "-"
             }
-            val differenceTempsRound = (Math.round(differenceTemps * 100.0) / 100.0).toFloat().toString().replace('.', ':')
+            val differenceTempsRound = ((differenceTemps * 100.0).roundToLong() / 100.0).toFloat().toString().replace('.', ':')
             txtDifferenceTemps.text = getString(R.string.difference_temps, signe, differenceTempsRound)
             txtDifferenceTemps.setTextColor(ContextCompat.getColor(this, couleurText))
             layout.addView(txtDifferenceTemps)
-
-
-
-
         }
     }
 
+
+    /**
+     * Démarrage de l'activity.
+     */
     override fun onStart() {
         super.onStart()
 

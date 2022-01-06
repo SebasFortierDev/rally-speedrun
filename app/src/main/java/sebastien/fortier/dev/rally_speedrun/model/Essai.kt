@@ -7,6 +7,11 @@ import java.util.*
 /**
  * Classe Essai
  *
+ * @property id Id de l'essai
+ * @property points Liste de points du parcours de l'essai
+ * @property dureeTotal Durée total de l'essai
+ * @property date Date du début de l'essai
+ * @property distance Distance parcourue lors de l'essai
  *
  * @author Sébastien Fortier
  */
