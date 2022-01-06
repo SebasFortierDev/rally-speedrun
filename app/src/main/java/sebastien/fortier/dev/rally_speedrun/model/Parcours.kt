@@ -1,10 +1,8 @@
 package sebastien.fortier.dev.rally_speedrun.model
 
-import android.util.Log
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * Classe Parcours
@@ -12,6 +10,7 @@ import kotlin.collections.ArrayList
  * @property id Id du parcours
  * @property nom Nom du parcours
  * @property points Liste de points du parcours
+ * @property essais Liste d'essai pour ce parcours
  *
  * @author Sébastien Fortier
  */
@@ -22,6 +21,12 @@ data class Parcours (
     var points: List<Point> = emptyList(),
     var essais: MutableList<Essai> = mutableListOf(),
 ) {
+
+    /**
+     * Permet d'obtenir l'essai avec le temps total le plus petit
+     *
+     * @return Le meilleur essai pour ce parcours
+     */
     fun obtenirMeilleurEssai() : Essai {
         var meilleurTemps = 3000000.0 // Chiffre trop grand
         var meilleurEssai = Essai()
@@ -38,6 +43,9 @@ data class Parcours (
         return meilleurEssai
     }
 
+    /**
+     * Permet d'obtenir le nombre d'essai pour ce parcours
+     */
     fun obtenirNombresEssais() : Int {
         return essais.size
     }

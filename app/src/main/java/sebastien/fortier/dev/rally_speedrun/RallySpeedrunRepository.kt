@@ -55,21 +55,6 @@ class RallySpeedrunRepository private constructor(context: Context) {
     }
 
     /**
-     * Permet de faire le lien avec le DAO et la base de données pour la fonction getParcoursSelonId
-     */
-    fun getParcoursSelonId(id: UUID): Flow<Parcours?> = parcoursDao.getParcoursSelonId(id)
-
-
-    /**
-     * Permet de faire le lien avec le DAO et la base de données pour la méthode updateParcours
-     */
-    fun updateParcours(parcours: Parcours) {
-        executor.execute {
-            parcoursDao.updateParcours(parcours)
-        }
-    }
-
-    /**
      * Permet de faire le lien avec le DAO et la base de données pour la méthode updateParcours
      */
     fun updateEssai(id: UUID, essais: List<Essai>) {

@@ -22,9 +22,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Rallyspeedrun">
         <activity
+            android:name=".parcours.EssaiDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".parcours.ParcoursDetailsActivity"
             android:exported="false"
-            android:parentActivityName=".parcours.ParcoursListActivity"/>
+            android:parentActivityName=".parcours.ParcoursListActivity" />
         <activity
             android:name=".parcours.AjoutParcoursActivity"
             android:exported="false"

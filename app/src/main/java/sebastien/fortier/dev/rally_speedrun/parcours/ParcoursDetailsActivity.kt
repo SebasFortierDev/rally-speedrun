@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
@@ -17,8 +16,26 @@ import sebastien.fortier.dev.rally_speedrun.R
 import sebastien.fortier.dev.rally_speedrun.model.Essai
 import sebastien.fortier.dev.rally_speedrun.model.Parcours
 import java.lang.reflect.Type
-import java.time.LocalDate
 
+private const val EXTRA_PARCOURS_DETAILS_ACTIVITY = "sebastien.fortier.dev.rally_speedrun.PARCOURS_DETAILS_ACTIVITY"
+private const val EXTRA_ESSAI_DETAILS_ACTIVITY = "sebastien.fortier.dev.rally_speedrun.ESSAI_DETAILS_ACTIVITY"
+private const val EXTRA_PARCOURS_ESSAI_DETAILS_ACTIVITY = "sebastien.fortier.dev.rally_speedrun.PARCOURS_ESSAI_DETAILS_ACTIVITY"
+
+/**
+ * Classe ParcoursDetailsActivity
+ *
+ * @property parcours Parcours qu'on voit les détails
+ *
+ * @property txtNomParcours TextView affichant le nom
+ * @property txtMeilleurTemps TextView affichant le meilleur temps
+ * @property txtNombreEssais TextView affichant le nombre total d'essai
+ * @property txtEssaisVide TextView affichant un message aucun essai existe
+ * @property pointsLayout Layout faisant afficher les points
+ * @property essaisRecyclerView Recyclerview affichant les essais
+ * @property adapter Adapter pour le recyclerView faisant afficher les essais
+ *
+ * @author Sébastien Fortier
+ */
 class ParcoursDetailsActivity : AppCompatActivity() {
 
     private var parcours: Parcours = Parcours(nom = "")
@@ -32,12 +49,16 @@ class ParcoursDetailsActivity : AppCompatActivity() {
     private lateinit var essaisRecyclerView: RecyclerView
     private var adapter: EssaiAdapter? = EssaiAdapter(emptyList())
 
-
+    /**
+     * Initialisation de l'Activity.
+     *
+     * @param savedInstanceState Les données conservées au changement d'état.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_parcours_details)
 
-        val parcoursString = intent.getStringExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY").toString()
+        val parcoursString = intent.getStringExtra(EXTRA_PARCOURS_DETAILS_ACTIVITY).toString()
         val parcoursDetails = toParcours(parcoursString)
 
         if (parcoursDetails != null) {
@@ -64,17 +85,15 @@ class ParcoursDetailsActivity : AppCompatActivity() {
         adapter = EssaiAdapter(listeOrdreTemps)
         essaisRecyclerView.adapter = adapter
 
-
-
         txtNomParcours = findViewById(R.id.nom_parcours)
         txtEssaisVide = findViewById(R.id.txt_essai_vide)
         txtMeilleurTemps = findViewById(R.id.meilleur_temps)
         txtNombreEssais = findViewById(R.id.nombre_essais)
-
-
-
     }
 
+    /**
+     * Démarrage de l'activity.
+     */
     override fun onStart() {
         super.onStart()
         txtNomParcours.text = parcours.nom
@@ -84,14 +103,12 @@ class ParcoursDetailsActivity : AppCompatActivity() {
         txtNombreEssais.text = parcours.obtenirNombresEssais().toString()
 
         if (parcours.essais.isEmpty()) {
-            essaisRecyclerView.visibility = View.GONE;
-            txtEssaisVide.visibility = View.VISIBLE;
-
+            essaisRecyclerView.visibility = View.GONE
+            txtEssaisVide.visibility = View.VISIBLE
         }
         else {
-            essaisRecyclerView.visibility = View.VISIBLE;
-            txtEssaisVide.visibility = View.GONE;
-
+            essaisRecyclerView.visibility = View.VISIBLE
+            txtEssaisVide.visibility = View.GONE
         }
     }
 
@@ -99,6 +116,9 @@ class ParcoursDetailsActivity : AppCompatActivity() {
      * Classe EssaiHolder
      *
      * @property essai Essai du holder
+     * @property dateEssai TextView affichant la date de l'essai
+     * @property tempsEssai TextView affichant la durée de l'essai
+     * @property distance TextView affichant la distance parcouru
      *
      * @param view Vue du holder
      */
@@ -132,7 +152,18 @@ class ParcoursDetailsActivity : AppCompatActivity() {
          * @param v La vue cliquée.
          */
         override fun onClick(v: View?) {
+            val intent = Intent(applicationContext, EssaiDetailsActivity::class.java)
 
+            val nomParcours = parcours.nom
+            val pointsParcours = parcours.points
+            parcours = Parcours(id = parcours.id, nom = nomParcours, points = pointsParcours, essais = parcours.essais)
+
+            val essaiString = fromEssai(essai)
+            val parcoursString = fromParcours(parcours)
+
+            intent.putExtra(EXTRA_ESSAI_DETAILS_ACTIVITY, essaiString )
+            intent.putExtra(EXTRA_PARCOURS_ESSAI_DETAILS_ACTIVITY, parcoursString )
+            startActivity(intent)
         }
     }
 
@@ -189,5 +220,32 @@ class ParcoursDetailsActivity : AppCompatActivity() {
         val gson = Gson()
         val type: Type = object : TypeToken<Parcours?>() {}.type
         return gson.fromJson(parcoursString, type)
+    }
+
+
+    /**
+     * Permet de transformer le parcours actuel en JSON afin de l'envoyer à une activity
+     *
+     * @param parcours Le parcours qu'on veut transformer en JSON
+     *
+     * @return Le parcours en JSON
+     */
+    private fun fromParcours(parcours: Parcours?): String {
+        val gson = Gson()
+        val type: Type = object : TypeToken<Parcours?>() {}.type
+        return gson.toJson(parcours, type)
+    }
+
+    /**
+     * Permet de transformer un essai en JSON afin de l'envoyer à une activity
+     *
+     * @param essai Le parcours qu'on veut transformer en JSON
+     *
+     * @return L'essai en JSON
+     */
+    private fun fromEssai(essai: Essai?): String {
+        val gson = Gson()
+        val type: Type = object : TypeToken<Essai?>() {}.type
+        return gson.toJson(essai, type)
     }
 }

@@ -23,6 +23,7 @@ import sebastien.fortier.dev.rally_speedrun.preferences.ParcoursActuel
 import java.lang.reflect.Type
 import java.util.ArrayList
 
+private const val EXTRA_PARCOURS_MAP_ACTIVITY = "sebastien.fortier.dev.rally_speedrun.PARCOURS_MAP_ACTIVITY"
 
 /**
  * Activity qui demande les permissions et qui permet de débuter le rally
@@ -40,6 +41,8 @@ import java.util.ArrayList
  *
  * @author Sébastien Fortier
  */
+
+
 class DemarrerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener {
 
     private val rallySpeedrunViewModel: RallySpeedrunViewModel by viewModels()
@@ -135,20 +138,13 @@ class DemarrerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
                             Manifest.permission.ACCESS_COARSE_LOCATION
                         ) == PackageManager.PERMISSION_GRANTED -> {
 
-                    // ICI
-                    // Envoie du parcours désiré
-                    val intent = Intent(this, MainActivity::class.java)
-                    //val points = ArrayList<Point>()
-                    //points.add(Point(LatLng(45.2956, -73.2726), "Point 1", 260F, 0x006e35e3))
-                    //points.add(Point(LatLng(45.2956, -73.2681), "Point 2", 300F, 0x00eb36e9))
-                    //points.add(Point(LatLng(45.2942, -73.2682), "Point 3", 120F, 0x0038ea37))
-                    //points.add(Point(LatLng(45.2942, -73.2725), "Point 4", 160F, 0x0035eaae))
 
+                    val intent = Intent(this, MainActivity::class.java)
                     val nomParcours = parcours.nom
                     val pointsParcours = parcours.points
                     parcours = Parcours(id = parcours.id, nom = nomParcours, points = pointsParcours, essais = parcours.essais)
                     val parcoursString = fromParcours(parcours)
-                    intent.putExtra("EXTRA_MAP_ACTIVITY_EXTRA_KEY", parcoursString )
+                    intent.putExtra(EXTRA_PARCOURS_MAP_ACTIVITY, parcoursString )
 
                     startActivity(intent)
                 }
