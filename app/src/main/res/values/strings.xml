@@ -40,6 +40,7 @@
     <string name="label_numero_essai">Tentative</string>
     <string name="points_details_nom">%1$s | </string>
     <string name="label_distance">Distance</string>
+    <string name="barre">|</string>
     <string name="difference_temps">%1$s%2$s</string>
     <string name="titre_details_essai">Détails tentative %1$s</string>
 </resources>

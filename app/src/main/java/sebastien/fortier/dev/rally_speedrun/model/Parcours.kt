@@ -15,7 +15,7 @@ import java.util.*
  * @author Sébastien Fortier
  */
 @Entity
-data class Parcours (
+data class Parcours(
     @PrimaryKey val id: UUID = UUID.randomUUID(),
     var nom: String,
     var points: List<Point> = emptyList(),
@@ -27,7 +27,7 @@ data class Parcours (
      *
      * @return Le meilleur essai pour ce parcours
      */
-    fun obtenirMeilleurEssai() : Essai {
+    fun obtenirMeilleurEssai(): Essai {
         var meilleurTemps = 3000000.0 // Chiffre trop grand
         var meilleurEssai = Essai()
 
@@ -46,7 +46,7 @@ data class Parcours (
     /**
      * Permet d'obtenir le nombre d'essai pour ce parcours
      */
-    fun obtenirNombresEssais() : Int {
+    fun obtenirNombresEssais(): Int {
         return essais.size
     }
 

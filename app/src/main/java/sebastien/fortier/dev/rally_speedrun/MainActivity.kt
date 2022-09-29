@@ -35,6 +35,11 @@ import com.google.android.gms.maps.model.LatLng
 
 import com.google.android.gms.maps.model.PolylineOptions
 import kotlin.math.roundToLong
+import android.os.PowerManager.PARTIAL_WAKE_LOCK
+
+import android.os.PowerManager
+import android.os.PowerManager.WakeLock
+import android.util.Log
 
 
 private const val REQUESTING_LOCATION_UPDATES_KEY = "REQUESTING_LOCATION_UPDATES_KEY"
@@ -95,7 +100,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     private lateinit var sensorManager: SensorManager
     private var sensor: Sensor? = null
 
-
     /**
      * Initialisation de l'Activity.
      *
@@ -105,6 +109,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         actionBar?.hide()
+
+
         // Charge l'affichage du nb de pas et du chronometre
         txtPas = findViewById(R.id.nb_pas)
         chrono = findViewById(R.id.chronometer)
@@ -247,6 +253,7 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     override fun onResume() {
         super.onResume()
         if (requestingLocationUpdates) startLocationUpdates()
+        Log.d("allo", "alllaoalaoalaoaao")
     }
 
     /**
@@ -254,7 +261,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
      */
     override fun onPause() {
         super.onPause()
-        stopLocationUpdates()
     }
 
     /**
@@ -429,7 +435,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
 
                 essai.points = pointsEssai
                 rallySpeedrunRepository.updateEssai(parcours.id, parcours.essais)
-
                 this.finish()
             }
             .create()
