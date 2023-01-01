@@ -282,7 +282,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
             ) != PackageManager.PERMISSION_GRANTED
         ) return
 
-        // Erreur bidon de l'IDE, la permission est déjà présente dans le manifest, tout fonctionne
         fusedLocationClient.requestLocationUpdates(locationRequest, locationCallback, Looper.getMainLooper())
     }
 

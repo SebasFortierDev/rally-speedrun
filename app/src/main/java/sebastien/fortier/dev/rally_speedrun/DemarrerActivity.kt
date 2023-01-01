@@ -126,7 +126,7 @@ class DemarrerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
     override fun onStart() {
         super.onStart()
 
-        // Mettra à jour le bouton commencer parcours
+        // Mettre à jour le bouton commencer parcours
         btnCommencer.isEnabled = listeParcoursActuel.isNotEmpty()
 
         btnCommencer.setOnClickListener {
