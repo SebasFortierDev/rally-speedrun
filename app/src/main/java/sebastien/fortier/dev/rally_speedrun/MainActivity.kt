@@ -253,7 +253,6 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, SensorEventListene
     override fun onResume() {
         super.onResume()
         if (requestingLocationUpdates) startLocationUpdates()
-        Log.d("allo", "alllaoalaoalaoaao")
     }
 
     /**

@@ -220,7 +220,6 @@ class DemarrerActivity : AppCompatActivity(), AdapterView.OnItemSelectedListener
      * Permet de faire des actions lorsqu'un item de la liste du spinner est selectionné
      */
     override fun onItemSelected(p0: AdapterView<*>?, p1: View?, position: Int, p3: Long) {
-        Log.d("onItemSelected", position.toString())
         ParcoursActuel.setStoredParcours(this, position.toString())
         parcours = listeParcoursActuel[position]
     }

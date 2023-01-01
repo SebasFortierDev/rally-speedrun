@@ -90,7 +90,7 @@ class RallySpeedrunTypeConverters {
         }
         val gson = Gson()
         val type: Type = object : TypeToken<List<Essai?>?>() {}.type
-        Log.d("allo", gson.toJson(listeEssais, type))
+
         return gson.toJson(listeEssais, type)
     }
 
